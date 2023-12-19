@@ -12,13 +12,11 @@ model Product {
   name            String         @db.VarChar(200)
   description     String         @db.Text
   stock           Int            @db.SmallInt
-  images          ProductImage[]
   price           Int
-  status          Boolean
   sub_category_id Int            @db.SmallInt
   sub_category    SubCategory    @relation(fields: [sub_category_id], references: [id])
-  Cart            Cart[]
-  Order           Order[]
+  images          ProductImage[]
+  CartProducts    CartProducts[]
 }
 
 model ProductImage {
@@ -43,9 +41,19 @@ model Category {
 }
 
 model Cart {
+  id           Int            @id @default(autoincrement())
+  session_id   String         @db.VarChar(150)
+  CartProducts CartProducts[]
+  order        Order[]
+}
+
+model CartProducts {
   id         Int     @id @default(autoincrement()) @db.SmallInt
   quantity   Int     @db.SmallInt
-  session_id String  @db.VarChar(150)
+  notes      String?
+  status     Boolean
+  cart_id    Int     @db.Int
+  cart       Cart    @relation(fields: [cart_id], references: [id])
   product_id Int     @db.Int
   product    Product @relation(fields: [product_id], references: [id])
 }
@@ -53,11 +61,11 @@ model Cart {
 model Order {
   id              Int         @id @default(autoincrement())
   quantity        Int         @db.SmallInt
-  session_id      String      @db.VarChar(150)
-  product_id      Int         @db.Int
+  total_price     Int
   detail_order_id Int         @db.Int
-  product         Product     @relation(fields: [product_id], references: [id])
   detail_order    DetailOrder @relation(fields: [detail_order_id], references: [id])
+  cart_id         Int
+  cart            Cart        @relation(fields: [cart_id], references: [id])
 }
 
 model DetailOrder {
