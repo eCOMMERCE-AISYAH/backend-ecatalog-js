@@ -12,11 +12,10 @@ model Product {
   name            String         @db.VarChar(200)
   description     String         @db.Text
   stock           Int            @db.SmallInt
-  images          ProductImage[]
   price           Int
-  status          Boolean
   sub_category_id Int            @db.SmallInt
   sub_category    SubCategory    @relation(fields: [sub_category_id], references: [id])
+  images          ProductImage[]
   Cart            Cart[]
   Order           Order[]
 }
