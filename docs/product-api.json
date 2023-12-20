@@ -1,0 +1,523 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Product API",
+    "description": "Product API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000"
+    }
+  ],
+  "paths": {
+    "/api/products": {
+      "post": {
+        "description": "Add new product",
+        "requestBody": {
+          "description": "Add new product",
+          "content": {
+            "application/json": {
+              "examples": {
+                "product": {
+                  "description": "Add new product example",
+                  "value": {
+                    "name": "Nama Product",
+                    "description": "Ini deskripsi produk",
+                    "stock": 5,
+                    "sub_category_id": 3,
+                    "price": 1000
+                  }
+                }
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "stock": {
+                    "type": "number"
+                  },
+                  "sub_category_id": {
+                    "type": "number"
+                  },
+                  "price": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Success create product",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Success create product",
+                    "value": {
+                      "status": 201,
+                      "data": {
+                        "id": 1,
+                        "name": "Nama Product",
+                        "description": "Ini deskripsi produk",
+                        "stock": 5,
+                        "sub_category_id": 3,
+                        "price": 1000
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "stock": {
+                          "type": "number"
+                        },
+                        "sub_category_id": {
+                          "type": "number"
+                        },
+                        "price": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed create product",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Failed create product",
+                    "value": {
+                      "status": 400,
+                      "message": "Failed create product"
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "messagge": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "description": "Get all products",
+        "responses": {
+          "200": {
+            "description": "Success get all product",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Success get all product",
+                    "value": {
+                      "status": 200,
+                      "data": [
+                        {
+                          "id": 1,
+                          "name": "Nama Product",
+                          "description": "Ini deskripsi produk",
+                          "stock": 5,
+                          "sub_category_id": 3,
+                          "price": 1000
+                        }
+                      ]
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "number"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "description": {
+                            "type": "string"
+                          },
+                          "stock": {
+                            "type": "number"
+                          },
+                          "sub_category_id": {
+                            "type": "number"
+                          },
+                          "price": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed get all product",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Failed get all product",
+                    "value": {
+                      "status": 400,
+                      "message": "Gagal menampilkan produk"
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{id}": {
+      "get": {
+        "description": "Get product detail",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success get product detail",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Success get product detail",
+                    "value": {
+                      "status": 200,
+                      "data": {
+                        "id": 1,
+                        "name": "Nama Product",
+                        "description": "Ini deskripsi produk",
+                        "stock": 5,
+                        "sub_category_id": 3,
+                        "price": 1000
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "stock": {
+                          "type": "number"
+                        },
+                        "sub_category_id": {
+                          "type": "number"
+                        },
+                        "price": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed get product detail",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Failed get product detail",
+                    "value": {
+                      "status": 400,
+                      "data": "Gagal menampilkan detail produk"
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "description": "Update product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "requestBody": {
+          "description": "Update product",
+          "content": {
+            "application/json": {
+              "examples": {
+                "product": {
+                  "description": "Update product",
+                  "value": {
+                    "name": "Nama Product Updated",
+                    "description": "Ini deskripsi produk updated",
+                    "stock": 5,
+                    "sub_category_id": 3,
+                    "price": 1000
+                  }
+                }
+              },
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "stock": {
+                    "type": "number"
+                  },
+                  "sub_category_id": {
+                    "type": "number"
+                  },
+                  "price": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success update product",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Success update product",
+                    "value": {
+                      "status": 200,
+                      "data": {
+                        "id": 1,
+                        "name": "Nama Product Updated",
+                        "description": "Ini deskripsi produk updated",
+                        "stock": 5,
+                        "sub_category_id": 3,
+                        "price": 1000
+                      }
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "number"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "description": {
+                          "type": "string"
+                        },
+                        "stock": {
+                          "type": "number"
+                        },
+                        "sub_category_id": {
+                          "type": "number"
+                        },
+                        "price": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed update product",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Failed update product",
+                    "value": {
+                      "status": 400,
+                      "message": "Gagal update produk"
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success delete product",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Success delete product",
+                    "value": {
+                      "status": 200,
+                      "message": "Data produk berhasil dihapus"
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Failed delete product",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "produk": {
+                    "description": "Failed delete product",
+                    "value": {
+                      "status": 400,
+                      "message": "Data produk gaga; dihapus"
+                    }
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "number"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
