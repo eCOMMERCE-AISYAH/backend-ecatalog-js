@@ -8,17 +8,17 @@ datasource db {
 }
 
 model Product {
-  id              Int            @id @default(autoincrement())
-  name            String         @db.VarChar(200)
-  description     String         @db.Text
-  stock           Int            @db.SmallInt
-  price           Int
-  sub_category_id Int            @db.SmallInt
-  sub_category    SubCategory    @relation(fields: [sub_category_id], references: [id])
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime       @updatedAt
-  images          ProductImage[]
-  CartProducts    CartProducts[]
+  id            Int            @id @default(autoincrement())
+  name          String         @db.VarChar(200)
+  description   String         @db.Text
+  stock         Int            @db.SmallInt
+  price         Int
+  subCategoryId Int            @db.SmallInt
+  sub_category  SubCategory    @relation(fields: [subCategoryId], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  images        ProductImage[]
+  CartProducts  CartProducts[]
 }
 
 model ProductImage {
@@ -31,13 +31,13 @@ model ProductImage {
 }
 
 model SubCategory {
-  id          Int       @id @default(autoincrement()) @db.SmallInt
-  name        String    @db.VarChar(100)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  category_id Int       @db.SmallInt
-  category    Category  @relation(fields: [category_id], references: [id])
-  products    Product[]
+  id         Int       @id @default(autoincrement()) @db.SmallInt
+  name       String    @db.VarChar(100)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  categoryId Int       @db.SmallInt
+  category   Category  @relation(fields: [categoryId], references: [id])
+  products   Product[]
 }
 
 model Category {
@@ -50,7 +50,7 @@ model Category {
 
 model Cart {
   id           Int            @id @default(autoincrement())
-  session_id   String         @db.VarChar(150)
+  sessionId    String         @db.VarChar(150)
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
   CartProducts CartProducts[]
@@ -64,32 +64,32 @@ model CartProducts {
   status     Boolean
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  cart_id    Int      @db.Int
-  cart       Cart     @relation(fields: [cart_id], references: [id])
+  cartId     Int      @db.Int
+  cart       Cart     @relation(fields: [cartId], references: [id])
   product_id Int      @db.Int
   product    Product  @relation(fields: [product_id], references: [id])
 }
 
 model Order {
-  id              Int         @id @default(autoincrement())
-  quantity        Int         @db.SmallInt
-  total_price     Int
-  createdAt       DateTime    @default(now())
-  updatedAt       DateTime    @updatedAt
-  detail_order_id Int         @db.Int
-  detail_order    DetailOrder @relation(fields: [detail_order_id], references: [id])
-  cart_id         Int
-  cart            Cart        @relation(fields: [cart_id], references: [id])
+  id            Int         @id @default(autoincrement())
+  quantity      Int         @db.SmallInt
+  total_price   Int
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  detailOrderId Int         @db.Int
+  detailOrder   DetailOrder @relation(fields: [detailOrderId], references: [id])
+  cartId        Int
+  cart          Cart        @relation(fields: [cartId], references: [id])
 }
 
 model DetailOrder {
-  id           Int      @id @default(autoincrement())
-  name         String   @db.VarChar(100)
-  phone_number String   @db.VarChar(20)
-  address      String   @db.VarChar(200)
-  notes        String   @db.Text
-  total        Int
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-  orders       Order[]
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  phoneNumber String   @db.VarChar(20)
+  address     String   @db.VarChar(200)
+  notes       String   @db.Text
+  total       Int
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  orders      Order[]
 }
