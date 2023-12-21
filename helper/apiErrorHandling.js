@@ -13,4 +13,4 @@ class ApiErrorHanding extends Error {
   }
 }
 
-exports = ApiErrorHanding;
+export default ApiErrorHanding;
