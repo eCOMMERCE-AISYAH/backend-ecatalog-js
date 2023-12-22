@@ -20,8 +20,8 @@ model Product {
 	description   String         @db.Text
 	stock         Int            @db.SmallInt
 	price         Int
-	subCategoryId String         @db.VarChar(100)
-	subCategory   SubCategory    @relation(fields: [subCategoryId], references: [id])
+	subCategoryId String?        @db.VarChar(100)
+	subCategory   SubCategory?   @relation(fields: [subCategoryId], references: [id])
 	createdAt     DateTime       @default(now())
 	updatedAt     DateTime       @updatedAt
 	images        ProductImage[]
@@ -34,7 +34,7 @@ model ProductImage {
 	productId String   @db.VarChar(100)
 	createdAt DateTime @default(now())
 	updatedAt DateTime @updatedAt
-	product   Product  @relation(fields: [productId], references: [id])
+	product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model SubCategory {
@@ -42,8 +42,8 @@ model SubCategory {
 	name       String    @db.VarChar(100)
 	createdAt  DateTime  @default(now())
 	updatedAt  DateTime  @updatedAt
-	categoryId String    @db.VarChar(100)
-	category   Category  @relation(fields: [categoryId], references: [id])
+	categoryId String?   @db.VarChar(100)
+	category   Category? @relation(fields: [categoryId], references: [id])
 	products   Product[]
 }
 
