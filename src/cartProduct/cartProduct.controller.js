@@ -1,4 +1,4 @@
-import * as cartProductService from './cartProduct.service.js';
+import cartProductService from './cartProduct.service.js';
 import responseError from '../../helper/responseError.js';
 
 async function getAllCartProduct(req, res) {
@@ -29,7 +29,7 @@ async function createCartProduct(req, res) {
   }
 }
 
-export {
+export default {
   getAllCartProduct,
   createCartProduct,
 };
