@@ -6,11 +6,11 @@
  * @param {number} statusCode - HTTP status code associated with the error.
  * @param {string} message - Custom error message describing the issue.
  */
-class ApiErrorHanding extends Error {
+class ApiErrorHandling extends Error {
   constructor(statusCode, message) {
     super(message);
     this.statusCode = statusCode;
   }
 }
 
-export default ApiErrorHanding;
+export default ApiErrorHandling;

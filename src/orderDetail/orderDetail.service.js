@@ -2,7 +2,7 @@ import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
 const get = async (id) => {
-  const result = await prisma.detailOrder.findUnique({
+  const result = await prisma.orderDetail.findUnique({
     where: {
       id: Number(id),
     },
@@ -26,19 +26,19 @@ const create = async (body) => {
     notes,
     phoneNumber,
   };
-  const result = await prisma.detailOrder.create({
+  const result = await prisma.orderDetail.create({
     data: {
       ...data,
     },
   });
-  if (result) {
+  if (!result) {
     throw new ApiErrorHandling(500, 'internal server error');
   }
 
   return result;
 };
 
-exports = {
+export default {
   create,
   get,
 };
