@@ -35,7 +35,7 @@ async function getAllCategory(req, res) {
 
 async function getCategoryById(req, res) {
   try {
-    const category = await categoryService.getCategoryById(req);
+    const category = await categoryService.getById(req);
 
     return res.status(200).json({
       status: 'success',
@@ -51,11 +51,27 @@ async function getCategoryById(req, res) {
 
 async function updateCategory(req, res) {
   try {
-    const category = await categoryService.updateCategory(req);
+    const category = await categoryService.update(req);
 
     return res.status(200).json({
       status: 'success',
       message: 'success update category',
+      data: {
+        category,
+      },
+    });
+  } catch (err) {
+    return ResponseError(res, err.statusCode || 400, err.message);
+  }
+}
+
+async function deleteCategory(req, res) {
+  try {
+    const category = await categoryService.destroy(req);
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'success delete category',
       data: {
         category,
       },
@@ -70,4 +86,5 @@ export default {
   getAllCategory,
   getCategoryById,
   updateCategory,
+  deleteCategory,
 };

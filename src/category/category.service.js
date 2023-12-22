@@ -4,18 +4,14 @@ import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 async function create(req) {
   const { name } = req.body;
 
-  const category = {
-    name,
-  };
-
   const result = await prisma.category.create({
     data: {
-      category,
+      name,
     },
   });
 
   if (!result) {
-    throw new ApiErrorHandling(500, 'internal server error');
+    throw new ApiErrorHandling(400, 'failed to create category');
   }
 
   return result;
@@ -34,10 +30,14 @@ async function getAll(req) {
     });
   }
 
+  if (!result) {
+    throw new ApiErrorHandling(404, 'category not found');
+  }
+
   return result;
 }
 
-async function getCategoryById(req) {
+async function getById(req) {
   const { id } = req.params;
 
   const result = await prisma.category.findUnique({
@@ -53,16 +53,13 @@ async function getCategoryById(req) {
   return result;
 }
 
-async function updateCategory(req) {
+async function update(req) {
   const { id } = req.params;
   const { name } = req.body;
-  const category = {
-    name,
-  };
 
   const result = await prisma.category.update({
     data: {
-      category,
+      name,
     },
     where: {
       id,
@@ -70,7 +67,23 @@ async function updateCategory(req) {
   });
 
   if (!result) {
-    throw new ApiErrorHandling(404, 'category not found');
+    throw new ApiErrorHandling(400, 'failed to update category');
+  }
+
+  return result;
+}
+
+async function destroy(req) {
+  const { id } = req.params;
+
+  const result = await prisma.category.delete({
+    where: {
+      id,
+    },
+  });
+
+  if (!result) {
+    throw new ApiErrorHandling(400, 'failed to delete category');
   }
 
   return result;
@@ -79,6 +92,7 @@ async function updateCategory(req) {
 export default {
   create,
   getAll,
-  getCategoryById,
-  updateCategory,
+  getById,
+  update,
+  destroy,
 };
