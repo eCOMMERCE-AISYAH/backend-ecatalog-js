@@ -9,7 +9,7 @@
 
 function responseError(res, statusCode, message) {
   return res.status(statusCode).json({
-    status: statusCode,
+    status: 'fail',
     message,
   });
 }
