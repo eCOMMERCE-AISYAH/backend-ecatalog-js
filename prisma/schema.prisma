@@ -8,12 +8,10 @@ datasource db {
 }
 
 model User {
-
 	id       String @id @default(uuid()) @db.VarChar(100)
 	name     String @db.VarChar(100)
 	username String @db.VarChar(50)
 	password String @db.VarChar(255)
-
 }
 
 model Product {
@@ -59,7 +57,7 @@ model Category {
 
 model Cart {
 	id          String        @id @default(uuid()) @db.VarChar(100)
-	sessionId   String        @db.VarChar(150)
+	cookieId    String        @db.VarChar(100)
 	createdAt   DateTime      @default(now())
 	updatedAt   DateTime      @updatedAt
 	CartProduct CartProduct[]
@@ -80,25 +78,25 @@ model CartProduct {
 }
 
 model Order {
-	id            String      @id @default(uuid()) @db.VarChar(100)
-	quantity      Int         @db.SmallInt
-	totalPrice    Int
-	createdAt     DateTime    @default(now())
-	updatedAt     DateTime    @updatedAt
-	orderDetailId String      @db.VarChar(100)
-	orderDetail   OrderDetail @relation(fields: [orderDetailId], references: [id])
-	cartId        String      @db.VarChar(100)
-	cart          Cart        @relation(fields: [cartId], references: [id])
-}
-
-model OrderDetail {
 	id          String   @id @default(uuid()) @db.VarChar(100)
 	name        String   @db.VarChar(100)
 	phoneNumber String   @db.VarChar(20)
-	address     String   @db.VarChar(200)
+	address     String?  @db.VarChar(200)
 	notes       String   @db.Text
-	total       Int
+	totalPrice  Int
 	createdAt   DateTime @default(now())
 	updatedAt   DateTime @updatedAt
-	orders      Order[]
+	cartId      String   @db.VarChar(100)
+	cart        Cart     @relation(fields: [cartId], references: [id])
 }
+
+// model OrderDetail {
+//   id          String   @id @default(uuid()) @db.VarChar(100)
+//   name        String   @db.VarChar(100)
+//   phoneNumber String   @db.VarChar(20)
+//   address     String?  @db.VarChar(200)
+//   notes       String   @db.Text
+//   createdAt   DateTime @default(now())
+//   updatedAt   DateTime @updatedAt
+//   orders      Order[]
+// }
