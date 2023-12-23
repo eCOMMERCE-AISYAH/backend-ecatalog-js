@@ -1,17 +1,23 @@
-import * as cartProductService from './cartProduct.service.js';
-import responseError from '../../helper/responseError.js';
+import cartProductService from './cartProduct.service.js';
+import responseJson from '../../helper/responseJson.js';
 
 async function getAllCartProduct(req, res) {
   try {
-    const cartProduct = await cartProductService.getAll();
+    // eslint-disable-next-line import/no-named-as-default-member
+    const cartProduct = await cartProductService.getAll(req);
 
-    return res.status(200).json({
-      status: 'OK',
-      message: 'success get all cart product',
-      cartProduct,
-    });
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success get all cart product',
+      { cartProduct },
+    );
   } catch (e) {
-    return responseError(res, e.statusCode || 400, e.message);
+    return responseJson.responseError(
+      res,
+      e.statusCode || 400,
+      e.message,
+    );
   }
 }
 
@@ -19,17 +25,22 @@ async function createCartProduct(req, res) {
   try {
     const cartProduct = await cartProductService.create(req);
 
-    return res.status(200).json({
-      status: 'OK',
-      message: 'success create csrt product',
-      cartProduct,
-    });
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success create cart product',
+      { cartProduct },
+    );
   } catch (e) {
-    return responseError(res, e.statusCode || 400, e.message);
+    return responseJson.responseError(
+      res,
+      e.statusCode || 400,
+      e.message,
+    );
   }
 }
 
-export {
+export default {
   getAllCartProduct,
   createCartProduct,
 };

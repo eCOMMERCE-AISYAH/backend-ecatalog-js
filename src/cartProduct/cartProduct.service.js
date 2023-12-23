@@ -49,7 +49,7 @@ async function create(req) {
   return result;
 }
 
-export {
+export default {
   getAll,
   create,
 };
