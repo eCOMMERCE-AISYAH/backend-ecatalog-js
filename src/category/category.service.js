@@ -22,9 +22,16 @@ async function getAll(req) {
 
   let result;
   if (take === undefined || skip === undefined) {
-    result = await prisma.category.findMany();
+    result = await prisma.category.findMany({
+      include: {
+        subCategories: true,
+      },
+    });
   } else {
     result = await prisma.category.findMany({
+      include: {
+        subCategories: true,
+      },
       take,
       skip,
     });
@@ -43,6 +50,9 @@ async function getById(req) {
   const result = await prisma.category.findUnique({
     where: {
       id,
+    },
+    include: {
+      subCategories: true,
     },
   });
 
