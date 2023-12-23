@@ -14,4 +14,12 @@ function responseError(res, statusCode, message) {
   });
 }
 
-export default responseError;
+function responseSuccess(res, statusCode, message, result) {
+  return res.status(statusCode).json({
+    status: 'success',
+    message,
+    data: { result },
+  });
+}
+
+export default { responseError, responseSuccess };
