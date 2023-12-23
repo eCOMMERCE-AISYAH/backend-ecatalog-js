@@ -1,17 +1,22 @@
 import cartService from './cart.service.js';
-import responseError from '../../helper/responseError.js';
+import responseJson from '../../helper/responseJson.js';
 
 async function getAllCart(req, res) {
   try {
     const cart = await cartService.getAll();
 
-    return res.status(200).json({
-      status: 'success',
-      message: 'success get all cart',
-      data: { cart },
-    });
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success get all cart',
+      { cart },
+    );
   } catch (e) {
-    return responseError(res, e.statusCode || 400, e.message);
+    return responseJson.responseError(
+      res,
+      e.statusCode || 400,
+      e.message,
+    );
   }
 }
 
@@ -19,13 +24,18 @@ async function getCartById(req, res) {
   try {
     const cart = await cartService.get(req.params.id);
 
-    return res.status(200).json({
-      status: 'success',
-      message: 'success get cart',
-      data: cart,
-    });
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success get cart',
+      { cart },
+    );
   } catch (e) {
-    return responseError(res, e.statusCode || 400, e.message);
+    return responseJson.responseError(
+      res,
+      e.statusCode || 400,
+      e.message,
+    );
   }
 }
 
@@ -33,13 +43,14 @@ async function createCart(req, res) {
   try {
     const cart = await cartService.create(req);
 
-    return res.status(201).json({
-      status: 'success',
-      message: 'success create cart',
-      data: { cart },
-    });
+    return responseJson.responseSuccess(
+      res,
+      201,
+      'success create cart',
+      { cart },
+    );
   } catch (e) {
-    return responseError(res, e.statusCode || 400, e.message);
+    return responseJson.responseError(res, e.statusCode || 400, e.message);
   }
 }
 
@@ -47,13 +58,18 @@ async function deleteCartById(req, res) {
   try {
     const cart = await cartService.destroy(req.params.id);
 
-    return res.status(200).json({
-      status: 'success',
-      message: 'success delete cart',
-      data: { cart },
-    });
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success delete cart',
+      { cart },
+    );
   } catch (e) {
-    return responseError(res, e.statusCode || 400, e.message);
+    return responseJson.responseError(
+      res,
+      e.statusCode || 400,
+      e.message,
+    );
   }
 }
 
