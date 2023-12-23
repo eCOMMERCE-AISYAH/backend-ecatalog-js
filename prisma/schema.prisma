@@ -77,16 +77,24 @@ model CartProduct {
 }
 
 model Order {
-	id          String   @id @default(uuid()) @db.VarChar(100)
-	name        String   @db.VarChar(100)
-	phoneNumber String   @db.VarChar(20)
-	address     String?  @db.VarChar(200)
-	notes       String?  @db.Text
-	totalPrice  Int
-	createdAt   DateTime @default(now())
-	updatedAt   DateTime @updatedAt
-	cartId      String   @db.VarChar(100)
-	cart        Cart     @relation(fields: [cartId], references: [id])
+	id           String         @id @default(uuid()) @db.VarChar(100)
+	name         String         @db.VarChar(100)
+	phoneNumber  String         @db.VarChar(20)
+	address      String?        @db.VarChar(200)
+	notes        String?        @db.Text
+	totalPrice   Int
+	createdAt    DateTime       @default(now())
+	updatedAt    DateTime       @updatedAt
+	cartId       String         @db.VarChar(100)
+	cart         Cart           @relation(fields: [cartId], references: [id])
+	Notification Notification[]
+}
+
+model Notification {
+	id      String  @id @default(uuid()) @db.VarChar(100)
+	status  Boolean
+	orderId String  @db.VarChar(100)
+	order   Order   @relation(fields: [orderId], references: [id])
 }
 
 // model OrderDetail {
