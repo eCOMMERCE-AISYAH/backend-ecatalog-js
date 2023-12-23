@@ -14,11 +14,11 @@ function responseError(res, statusCode, message) {
   });
 }
 
-function responseSuccess(res, statusCode, message, result) {
+function responseSuccess(res, statusCode, message, data) {
   return res.status(statusCode).json({
     status: 'success',
     message,
-    data: { result },
+    data,
   });
 }
 
