@@ -4,6 +4,7 @@ import categoryRoute from '../category/category.route.js';
 import cartRoute from '../cart/cart.route.js';
 import subCategoryRoute from '../subCategory/subCategory.route.js';
 import orderRoute from '../order/order.route.js';
+import productRoute from '../product/product.route.js';
 
 const router = express.Router();
 
@@ -21,6 +22,9 @@ router.use(categoryRoute);
 
 // SUB CATEGORY PRODUCT
 router.use(subCategoryRoute);
+
+// PRODUCT
+router.use(productRoute);
 
 router.get('/hello', (req, res) => {
   res.status(200).json({
