@@ -5,6 +5,7 @@ import cartRoute from '../cart/cart.route.js';
 import subCategoryRoute from '../subCategory/subCategory.route.js';
 import orderRoute from '../order/order.route.js';
 import productRoute from '../product/product.route.js';
+import userRoute from '../user/user.route.js';
 
 const router = express.Router();
 
@@ -25,6 +26,9 @@ router.use(subCategoryRoute);
 
 // PRODUCT
 router.use(productRoute);
+
+// USER
+router.use(userRoute);
 
 router.get('/hello', (req, res) => {
   res.status(200).json({
