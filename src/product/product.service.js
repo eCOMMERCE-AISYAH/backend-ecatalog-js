@@ -1,5 +1,6 @@
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
+import productQuery from '../../helper/query/product.query.js';
 
 async function create(req) {
   const {
@@ -10,41 +11,40 @@ async function create(req) {
     price,
   } = req.body;
 
-  const result = await prisma.product.create({
-    data: {
+  const isExist = await prisma.product.count({
+    where: {
+      name,
+    },
+  });
+
+  if (isExist > 0) {
+    throw new ApiErrorHandling(400, 'product is exist');
+  }
+
+  const result = await prisma.product.create(
+    productQuery.create(
       name,
       description,
       stock,
       subCategoryId,
       price,
-    },
-    include: {
-      subCategory: true,
-    },
-  });
+    ),
+  );
 
   if (!result) {
-    return ApiErrorHandling(500, 'internal server error');
+    throw new ApiErrorHandling(400, 'cannot create product');
   }
 
   return result;
 }
 
 async function getAll(req) {
-  const { take, skip } = req.query;
+  const { take = undefined, skip = undefined } = req.query;
 
-  let result;
-  if (take === undefined || skip === undefined) {
-    result = await prisma.product.findMany({});
-  } else {
-    result = await prisma.product.findMany({
-      take,
-      skip,
-    });
-  }
+  const result = await prisma.product.findMany(productQuery.getAll(take, skip));
 
-  if (!result) {
-    throw new ApiErrorHandling(404, 'products not found');
+  if (!result.length) {
+    throw new ApiErrorHandling(404, 'product not found');
   }
 
   return result;
@@ -52,12 +52,9 @@ async function getAll(req) {
 
 async function getAllBySubCategory(req) {
   const { id } = req.params;
+  const { take = undefined, skip = undefined } = req.query;
 
-  const result = await prisma.product.findMany({
-    where: {
-      subCategoryId: id,
-    },
-  });
+  const result = await prisma.product.findMany(productQuery.getALlBySubCategory(id, take, skip));
 
   if (!result) {
     throw new ApiErrorHandling(404, 'products not found');
@@ -69,11 +66,7 @@ async function getAllBySubCategory(req) {
 async function getById(req) {
   const { id } = req.params;
 
-  const result = await prisma.product.findUnique({
-    where: {
-      id,
-    },
-  });
+  const result = await prisma.product.findUnique(productQuery.getById(id));
 
   if (!result) {
     throw new ApiErrorHandling(404, 'product not found');
@@ -92,21 +85,16 @@ async function update(req) {
     price,
   } = req.body;
 
-  const result = await prisma.product.update({
-    data: {
+  const result = await prisma.product.update(
+    productQuery.update(
+      id,
       name,
       description,
       stock,
       subCategoryId,
       price,
-    },
-    where: {
-      id,
-    },
-    include: {
-      subCategory: true,
-    },
-  });
+    ),
+  );
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to update product');
@@ -118,14 +106,7 @@ async function update(req) {
 async function destroy(req) {
   const { id } = req.params;
 
-  const result = await prisma.product.delete({
-    where: {
-      id,
-    },
-    include: {
-      subCategory: true,
-    },
-  });
+  const result = await prisma.product.delete(productQuery.destroy(id));
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to delete product');
