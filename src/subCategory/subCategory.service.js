@@ -1,47 +1,35 @@
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
+import subCategoryQuery from '../../helper/query/subCategory.query.js';
 
 async function create(req) {
   const { name, categoryId } = req.body;
 
-  const result = await prisma.subCategory.create({
-    data: {
+  const isExist = await prisma.subCategory.count({
+    where: {
       name,
-      categoryId,
-    },
-    include: {
-      category: true,
     },
   });
 
+  if (isExist > 0) {
+    throw new ApiErrorHandling(400, 'sub category is exist');
+  }
+
+  const result = await prisma.subCategory.create(subCategoryQuery.create(name, categoryId));
+
   if (!result) {
-    return ApiErrorHandling(500, 'internal server error');
+    throw new ApiErrorHandling(400, 'cannot create sub category');
   }
 
   return result;
 }
 
 async function getAll(req) {
-  const { take, skip } = req.query;
+  const { take = undefined, skip = undefined } = req.query;
 
-  let result;
-  if (take === undefined || skip === undefined) {
-    result = await prisma.subCategory.findMany({
-      include: {
-        category: true,
-      },
-    });
-  } else {
-    result = await prisma.subCategory.findMany({
-      include: {
-        category: true,
-      },
-      take,
-      skip,
-    });
-  }
+  const result = await prisma.subCategory.findMany(subCategoryQuery.getAll(take, skip));
 
-  if (!result) {
+  if (!result.length) {
     throw new ApiErrorHandling(404, 'sub category not found');
   }
 
@@ -51,14 +39,7 @@ async function getAll(req) {
 async function getById(req) {
   const { id } = req.params;
 
-  const result = await prisma.subCategory.findUnique({
-    where: {
-      id,
-    },
-    include: {
-      category: true,
-    },
-  });
+  const result = await prisma.subCategory.findUnique(subCategoryQuery.getById(id));
 
   if (!result) {
     throw new ApiErrorHandling(404, 'sub category not found');
@@ -71,17 +52,7 @@ async function update(req) {
   const { id } = req.params;
   const { name } = req.body;
 
-  const result = await prisma.subCategory.update({
-    data: {
-      name,
-    },
-    where: {
-      id,
-    },
-    include: {
-      category: true,
-    },
-  });
+  const result = await prisma.subCategory.update(subCategoryQuery.update(id, name));
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to update sub category');
@@ -93,14 +64,7 @@ async function update(req) {
 async function destroy(req) {
   const { id } = req.params;
 
-  const result = await prisma.subCategory.delete({
-    where: {
-      id,
-    },
-    include: {
-      category: true,
-    },
-  });
+  const result = await prisma.subCategory.delete(subCategoryQuery.destroy(id));
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to delete sub category');

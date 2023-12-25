@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
+import userQuery from '../../helper/query/user.query.js';
 
 async function create(req) {
   const { name, username, password } = req.body;
@@ -12,26 +13,22 @@ async function create(req) {
   });
 
   if (isUserExist > 0) {
-    return ApiErrorHandling(400, 'username is already use');
+    throw new ApiErrorHandling(400, 'username is already use');
   }
 
   // Hash Password
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const result = await prisma.user.create({
-    data: {
+  const result = await prisma.user.create(
+    userQuery.create(
       name,
       username,
-      password: hashedPassword,
-    },
-    select: {
-      name: true,
-      username: true,
-    },
-  });
+      hashedPassword,
+    ),
+  );
 
   if (!result) {
-    return ApiErrorHandling(400, 'failed to register');
+    throw new ApiErrorHandling(400, 'failed to register');
   }
 
   return result;
@@ -40,15 +37,7 @@ async function create(req) {
 async function getById(req) {
   const { id } = req.params;
 
-  const result = await prisma.user.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      name: true,
-      username: true,
-    },
-  });
+  const result = await prisma.user.findUnique(userQuery.getById(id));
 
   if (!result) {
     throw new ApiErrorHandling(404, 'user not found');
@@ -61,120 +50,53 @@ async function update(req) {
   const { id } = req.params;
   const { name, oldPassword, newPassword } = req.body;
 
-  // Mengambil data pengguna berdasarkan ID
   const user = await prisma.user.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      password: true,
-    },
+    where: { id },
+    select: { password: true },
   });
 
   if (!user) {
-    throw new ApiErrorHandling(404, 'user not found');
+    throw new ApiErrorHandling(404, 'User not found');
   }
 
   const storedPassword = user.password;
 
   // Update all data
   if (name && oldPassword && newPassword) {
-    // Compare old password with hash which stored
     const passwordMatch = await bcrypt.compare(oldPassword, storedPassword);
 
     if (!passwordMatch) {
-      throw new ApiErrorHandling(400, 'old password not match');
+      throw new ApiErrorHandling(400, 'Old password does not match');
     }
 
-    // Hash New Password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+    return userQuery.update(id, { name, password: hashedNewPassword });
+  }
 
-    const result = await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        name,
-        password: hashedNewPassword,
-      },
-      select: {
-        name: true,
-        username: true,
-      },
-    });
-
-    if (!result) {
-      throw new ApiErrorHandling(400, 'failed update user');
-    }
-
-    return result;
+  // Update only name
+  if (name) {
+    return userQuery.update(id, { name });
   }
 
   // Update only password
   if (oldPassword && newPassword) {
-    // Compare old password with hash which stored
     const passwordMatch = await bcrypt.compare(oldPassword, storedPassword);
 
     if (!passwordMatch) {
-      throw new ApiErrorHandling(400, 'old password not match');
+      throw new ApiErrorHandling(400, 'Old password does not match');
     }
 
-    // Hash New Password
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-
-    const result = await prisma.user.update({
-      where: {
-        id,
-      },
-      data: {
-        password: hashedNewPassword,
-      },
-      select: {
-        name: true,
-        username: true,
-      },
-    });
-
-    if (!result) {
-      throw new ApiErrorHandling(400, 'failed update user');
-    }
-
-    return result;
+    return userQuery.update(id, { password: hashedNewPassword });
   }
 
-  // Update only name
-  const result = await prisma.user.update({
-    where: {
-      id,
-    },
-    data: {
-      name,
-    },
-    select: {
-      name: true,
-      username: true,
-    },
-  });
-
-  if (!result) {
-    throw new ApiErrorHandling(400, 'failed update user');
-  }
-
-  return result;
+  throw new ApiErrorHandling(400, 'Invalid update request');
 }
 
 async function destroy(req) {
   const { id } = req.params;
 
-  const result = await prisma.user.delete({
-    where: {
-      id,
-    },
-    select: {
-      name: true,
-      username: true,
-    },
-  });
+  const result = await prisma.user.delete(userQuery.destroy(id));
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to delete user');
