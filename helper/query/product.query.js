@@ -7,42 +7,24 @@ function create(name, description, stock, subCategoryId, price) {
       subCategoryId,
       price,
     },
-    select: {
-      name: true,
-      description: true,
-      stock: true,
+    include: {
       subCategory: {
-        select: {
-          name: true,
-          category: {
-            select: {
-              name: true,
-            },
-          },
+        include: {
+          category: true,
         },
       },
-      price: true,
     },
   };
 }
 
 function getAll(take, skip) {
   return {
-    select: {
-      name: true,
-      description: true,
-      stock: true,
+    include: {
       subCategory: {
-        select: {
-          name: true,
-          category: {
-            select: {
-              name: true,
-            },
-          },
+        include: {
+          category: true,
         },
       },
-      price: true,
     },
     take: take !== undefined ? Number(take) : undefined,
     skip: skip !== undefined ? Number(skip) : undefined,
@@ -54,21 +36,12 @@ function getALlBySubCategory(id, take, skip) {
     where: {
       subCategoryId: id,
     },
-    select: {
-      name: true,
-      description: true,
-      stock: true,
+    include: {
       subCategory: {
-        select: {
-          name: true,
-          category: {
-            select: {
-              name: true,
-            },
-          },
+        include: {
+          category: true,
         },
       },
-      price: true,
     },
     take: take !== undefined ? Number(take) : undefined,
     skip: skip !== undefined ? Number(skip) : undefined,
@@ -80,21 +53,12 @@ function getById(id) {
     where: {
       id,
     },
-    select: {
-      name: true,
-      description: true,
-      stock: true,
+    include: {
       subCategory: {
-        select: {
-          name: true,
-          category: {
-            select: {
-              name: true,
-            },
-          },
+        include: {
+          category: true,
         },
       },
-      price: true,
     },
   };
 }
@@ -111,21 +75,12 @@ function update(id, name, description, stock, subCategoryId, price) {
     where: {
       id,
     },
-    select: {
-      name: true,
-      description: true,
-      stock: true,
+    include: {
       subCategory: {
-        select: {
-          name: true,
-          category: {
-            select: {
-              name: true,
-            },
-          },
+        include: {
+          category: true,
         },
       },
-      price: true,
     },
   };
 }
@@ -135,21 +90,12 @@ function destroy(id) {
     where: {
       id,
     },
-    select: {
-      name: true,
-      description: true,
-      stock: true,
+    include: {
       subCategory: {
-        select: {
-          name: true,
-          category: {
-            select: {
-              name: true,
-            },
-          },
+        include: {
+          category: true,
         },
       },
-      price: true,
     },
   };
 }

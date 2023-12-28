@@ -8,10 +8,6 @@ function create(name, username, hashedPassword) {
       username,
       password: hashedPassword,
     },
-    select: {
-      name: true,
-      username: true,
-    },
   };
 }
 
@@ -20,10 +16,6 @@ function getById(id) {
     where: {
       id,
     },
-    select: {
-      name: true,
-      username: true,
-    },
   };
 }
 
@@ -31,7 +23,6 @@ async function update(id, data) {
   const result = await prisma.user.update({
     where: { id },
     data,
-    select: { name: true, username: true },
   });
 
   if (!result) {
@@ -45,10 +36,6 @@ function destroy(id) {
   return {
     where: {
       id,
-    },
-    select: {
-      name: true,
-      username: true,
     },
   };
 }
