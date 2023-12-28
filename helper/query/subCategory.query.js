@@ -4,26 +4,16 @@ function create(name, categoryId) {
       name,
       categoryId,
     },
-    select: {
-      name: true,
-      category: {
-        select: {
-          name: true,
-        },
-      },
+    include: {
+      category: true,
     },
   };
 }
 
 function getAll(take, skip) {
   return {
-    select: {
-      name: true,
-      category: {
-        select: {
-          name: true,
-        },
-      },
+    include: {
+      category: true,
     },
     take: take !== undefined ? Number(take) : undefined,
     skip: skip !== undefined ? Number(skip) : undefined,
@@ -35,13 +25,8 @@ function getById(id) {
     where: {
       id,
     },
-    select: {
-      name: true,
-      category: {
-        select: {
-          name: true,
-        },
-      },
+    include: {
+      category: true,
     },
   };
 }
@@ -54,13 +39,8 @@ function update(id, name) {
     where: {
       id,
     },
-    select: {
-      name: true,
-      category: {
-        select: {
-          name: true,
-        },
-      },
+    include: {
+      category: true,
     },
   };
 }
@@ -70,13 +50,8 @@ function destroy(id) {
     where: {
       id,
     },
-    select: {
-      name: true,
-      category: {
-        select: {
-          name: true,
-        },
-      },
+    include: {
+      category: true,
     },
   };
 }
