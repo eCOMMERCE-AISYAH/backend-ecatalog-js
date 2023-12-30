@@ -3,7 +3,7 @@ import responseJson from '../../helper/responseJson.js';
 
 async function getAllOrder(req, res) {
   try {
-    const order = await orderServices.getAll(req);
+    const order = await orderServices.getAllByQuery(req);
 
     return responseJson.responseSuccess(
       res,
