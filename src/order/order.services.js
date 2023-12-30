@@ -1,19 +1,24 @@
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
-async function getAll(req) {
-  const { take, skip } = req.query;
+async function getAllByQuery(req) {
+  const {
+    take, skip, name, phonenumber, cartid,
+  } = req.query;
 
-  let result;
-  if (take === undefined || skip === undefined) {
-    result = await prisma.order.findMany();
-  } else {
-    result = await prisma.order.findMany({
-      skip,
-      take,
-    });
-  }
-  //
+  const result = await prisma.order.findMany({
+    take: take === undefined ? undefined : Number(take),
+    skip: skip === undefined ? undefined : Number(skip),
+    where: {
+      name: name !== undefined ? name : undefined,
+      phoneNumber: phonenumber !== undefined ? phonenumber : undefined,
+      cartId: cartid !== undefined ? cartid : undefined,
+    },
+    include: {
+      cart: true,
+    },
+  });
+
   if (!result) {
     throw new ApiErrorHandling(500, 'internal server error');
   }
@@ -25,6 +30,19 @@ async function get(id) {
   const result = await prisma.order.findUnique({
     where: {
       id,
+    },
+    select: {
+      id: true,
+      name: true,
+      phoneNumber: true,
+      address: true,
+      notes: true,
+      cart: {
+        select: {
+          id: true,
+          cookieId: true,
+        },
+      },
     },
   });
 
@@ -57,6 +75,10 @@ async function create(req) {
     data: {
       ...data,
     },
+    include: {
+      cart: true,
+    },
+
   });
 
   if (!result) {
@@ -83,7 +105,7 @@ async function destroy(id) {
 
 export default {
   get,
-  getAll,
+  getAllByQuery,
   create,
   destroy,
 };

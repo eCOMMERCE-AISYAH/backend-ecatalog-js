@@ -6,11 +6,15 @@ import subCategoryRoute from '../subCategory/subCategory.route.js';
 import orderRoute from '../order/order.route.js';
 import productRoute from '../product/product.route.js';
 import userRoute from '../user/user.route.js';
+import notificationRoute from '../notification/notification.route.js';
 
 const router = express.Router();
 
 // ORDER
 router.use(orderRoute);
+
+// NOTIFICATION
+router.use(notificationRoute);
 
 // CART
 router.use(cartRoute);
