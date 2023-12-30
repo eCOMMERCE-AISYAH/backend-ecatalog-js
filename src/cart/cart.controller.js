@@ -3,7 +3,7 @@ import responseJson from '../../helper/responseJson.js';
 
 async function getAllCart(req, res) {
   try {
-    const cart = await cartService.getAll();
+    const cart = await cartService.getAllByQuery(req);
 
     return responseJson.responseSuccess(
       res,

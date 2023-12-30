@@ -15,8 +15,12 @@ async function get(id) {
   return result;
 }
 
-async function getAll() {
-  const result = await prisma.cart.findMany();
+async function getAllByQuery(req) {
+  const { take, skip } = req.query;
+  const result = await prisma.cart.findMany({
+    skip: skip !== undefined ? Number(skip) : undefined,
+    take: take !== undefined ? Number(take) : undefined,
+  });
 
   if (!result) {
     throw new ApiErrorHandling(404, 'cart not found');
@@ -57,7 +61,7 @@ async function destroy(id) {
 
 export default {
   get,
-  getAll,
+  getAllByQuery,
   create,
   destroy,
 };
