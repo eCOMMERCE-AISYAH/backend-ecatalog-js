@@ -1,14 +1,33 @@
 import userService from './user.service.js';
 import ResponseJson from '../../helper/responseJson.js';
 
-async function createUser(req, res) {
+async function registerUser(req, res) {
   try {
-    const user = await userService.create(req);
+    const user = await userService.register(req);
 
     return ResponseJson.responseSuccess(
       res,
       201,
       'success to register',
+      { user },
+    );
+  } catch (err) {
+    return ResponseJson.responseError(
+      res,
+      err.statusCode || 400,
+      err.message,
+    );
+  }
+}
+
+async function loginUser(req, res) {
+  try {
+    const user = await userService.login(req);
+
+    return ResponseJson.responseSuccess(
+      res,
+      200,
+      'success to login',
       { user },
     );
   } catch (err) {
@@ -78,7 +97,8 @@ async function deleteUser(req, res) {
 }
 
 export default {
-  createUser,
+  registerUser,
+  loginUser,
   getUserById,
   updateUser,
   deleteUser,

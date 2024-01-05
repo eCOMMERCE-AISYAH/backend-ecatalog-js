@@ -1,9 +1,10 @@
 import bcrypt from 'bcrypt';
+import { v4 as uuid } from 'uuid';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 import userQuery from '../../helper/query/user.query.js';
 
-async function create(req) {
+async function register(req) {
   const { name, username, password } = req.body;
 
   const isUserExist = await prisma.user.count({
@@ -32,6 +33,35 @@ async function create(req) {
   }
 
   return result;
+}
+
+async function login(req) {
+  const { username, password } = req.body;
+  const token = uuid().toString();
+
+  const user = await prisma.user.findFirst({
+    where: {
+      username,
+    },
+  });
+
+  const validPassword = await bcrypt.compare(password, user.password);
+
+  if (!user && !validPassword) {
+    throw new ApiErrorHandling(401, 'username or password is invalid');
+  }
+
+  return prisma.user.update({
+    data: {
+      token,
+    },
+    where: {
+      id: user.id,
+    },
+    select: {
+      token: true,
+    },
+  });
 }
 
 async function getById(req) {
@@ -106,7 +136,8 @@ async function destroy(req) {
 }
 
 export default {
-  create,
+  register,
+  login,
   getById,
   update,
   destroy,
