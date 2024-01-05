@@ -3,7 +3,7 @@ import responseJson from '../../helper/responseJson.js';
 
 async function getAllNotificationByStatus(req, res) {
   try {
-    const notification = await notificationService.getAllByStatus(req);
+    const notification = await notificationService.getAllByQuery(req);
 
     return responseJson.responseSuccess(
       res,

@@ -2,13 +2,14 @@ import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
 async function getAllByQuery(req) {
-  const { skip, take } = req.query;
-  const { status } = req.body;
+  const { skip, take, status } = req.query;
 
   const result = await prisma.notification.findMany({
     take: take === undefined ? undefined : Number(take),
     skip: skip === undefined ? undefined : Number(skip),
-    where: status !== undefined ? { status } : undefined,
+    where: {
+      status: status !== undefined ? (status === 'true') : undefined,
+    },
     include: {
       order: true,
     },
@@ -39,7 +40,7 @@ async function get(id) {
 }
 
 async function create(req) {
-  const { status, orderId } = req.body;
+  const { status = false, orderId } = req.body;
 
   const data = {
     status,
@@ -74,7 +75,7 @@ async function update(req) {
       id: req.params.id,
     },
     data: {
-      data,
+      ...data,
     },
     include: {
       order: true,
