@@ -39,16 +39,20 @@ async function login(req) {
   const { username, password } = req.body;
   const token = uuid().toString();
 
-  const user = await prisma.user.findFirst({
+  const user = await prisma.user.findUnique({
     where: {
       username,
     },
   });
 
+  if (!user) {
+    throw new ApiErrorHandling(401, 'Username or password is invalid');
+  }
+
   const validPassword = await bcrypt.compare(password, user.password);
 
-  if (!user && !validPassword) {
-    throw new ApiErrorHandling(401, 'username or password is invalid');
+  if (!validPassword) {
+    throw new ApiErrorHandling(401, 'Username or password is invalid');
   }
 
   return prisma.user.update({
@@ -56,7 +60,7 @@ async function login(req) {
       token,
     },
     where: {
-      id: user.id,
+      username,
     },
     select: {
       token: true,
