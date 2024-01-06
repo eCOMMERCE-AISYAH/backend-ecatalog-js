@@ -6,6 +6,9 @@ async function get(id) {
     where: {
       id,
     },
+    include: {
+      user: true,
+    },
   });
 
   if (!result) {
@@ -20,6 +23,9 @@ async function getAllByQuery(req) {
   const result = await prisma.cart.findMany({
     skip: skip !== undefined ? Number(skip) : undefined,
     take: take !== undefined ? Number(take) : undefined,
+    include: {
+      user: true,
+    },
   });
 
   if (!result) {
@@ -30,11 +36,18 @@ async function getAllByQuery(req) {
 }
 
 async function create(req) {
-  const { cookieId } = req.body;
+  const { userId } = req.body;
 
   const result = await prisma.cart.create({
     data: {
-      cookieId,
+      user: {
+        connect: {
+          id: userId,
+        },
+      },
+    },
+    include: {
+      user: true,
     },
   });
 
