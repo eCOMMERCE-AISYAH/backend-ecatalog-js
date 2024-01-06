@@ -9,8 +9,8 @@ console.log(dirname);
 
 app.use(express.json());
 
+app.use('/public/images', express.static(path.join(dirname, '/public/images')));
 app.use(routerIndex);
-app.use('/images', express.static(path.join(dirname, 'public/images')));
 
 app.listen(process.env.APP_PORT, process.env.APP_HOST, () => {
   console.log(`Server running at http://${process.env.APP_HOST}:${process.env.APP_PORT}`);
