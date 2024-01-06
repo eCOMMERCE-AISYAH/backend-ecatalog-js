@@ -1,114 +1,104 @@
 generator client {
-	provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-	provider = "mysql"
-	url      = env("DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model User {
-	id          String  @id @default(uuid()) @db.VarChar(100)
-	name        String? @db.VarChar(100)
-	username    String  @unique @db.VarChar(50)
-	password    String? @db.VarChar(255)
-	address     String? @db.VarChar(500)
-	phoneNumber String? @db.VarChar(20)
-	token       String? @db.VarChar(255)
-	Cart        Cart[]
+  id          String  @id @default(uuid()) @db.VarChar(100)
+  name        String? @db.VarChar(100)
+  username    String  @unique @db.VarChar(50)
+  password    String? @db.VarChar(255)
+  address     String? @db.VarChar(500)
+  phoneNumber String? @db.VarChar(20)
+  role        Boolean @default(false)
+  token       String? @db.VarChar(255)
+  Cart        Cart[]
 }
 
 model Product {
-	id            String         @id @default(uuid()) @db.VarChar(100)
-	name          String         @db.VarChar(200)
-	description   String         @db.Text
-	stock         Int            @db.SmallInt
-	price         Int
-	subCategoryId String?        @db.VarChar(100)
-	subCategory   SubCategory?   @relation(fields: [subCategoryId], references: [id])
-	createdAt     DateTime       @default(now())
-	updatedAt     DateTime       @updatedAt
-	images        ProductImage[]
-	CartProduct   CartProduct[]
+  id            String         @id @default(uuid()) @db.VarChar(100)
+  name          String         @db.VarChar(200)
+  description   String         @db.Text
+  stock         Int            @db.SmallInt
+  price         Int
+  subCategoryId String?        @db.VarChar(100)
+  subCategory   SubCategory?   @relation(fields: [subCategoryId], references: [id])
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  images        ProductImage[]
+  CartProduct   CartProduct[]
 }
 
 model ProductImage {
-	id        String   @id @default(uuid()) @db.VarChar(100)
-	image     String   @db.VarChar(100)
-	productId String   @db.VarChar(100)
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-	product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  id        String   @id @default(uuid()) @db.VarChar(100)
+  image     String   @db.VarChar(100)
+  productId String   @db.VarChar(100)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 }
 
 model SubCategory {
-	id         String    @id @default(uuid()) @db.VarChar(100)
-	name       String    @db.VarChar(100)
-	createdAt  DateTime  @default(now())
-	updatedAt  DateTime  @updatedAt
-	categoryId String?   @db.VarChar(100)
-	category   Category? @relation(fields: [categoryId], references: [id])
-	products   Product[]
+  id         String    @id @default(uuid()) @db.VarChar(100)
+  name       String    @db.VarChar(100)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  categoryId String?   @db.VarChar(100)
+  category   Category? @relation(fields: [categoryId], references: [id])
+  products   Product[]
 }
 
 model Category {
-	id            String        @id @default(uuid()) @db.VarChar(100)
-	name          String        @db.VarChar(100)
-	createdAt     DateTime      @default(now())
-	updatedAt     DateTime      @updatedAt
-	subCategories SubCategory[]
+  id            String        @id @default(uuid()) @db.VarChar(100)
+  name          String        @db.VarChar(100)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  subCategories SubCategory[]
 }
 
 model Cart {
-	id          String        @id @default(uuid()) @db.VarChar(100)
-	userId      String        @db.VarChar(100)
-	user        User          @relation(fields: [userId], references: [id])
-	createdAt   DateTime      @default(now())
-	updatedAt   DateTime      @updatedAt
-	CartProduct CartProduct[]
-	order       Order[]
+  id          String        @id @default(uuid()) @db.VarChar(100)
+  userId      String        @db.VarChar(100)
+  user        User          @relation(fields: [userId], references: [id])
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  CartProduct CartProduct[]
+  order       Order[]
 }
 
 model CartProduct {
-	id        String   @id @default(uuid()) @db.VarChar(100)
-	quantity  Int      @db.SmallInt
-	notes     String?
-	createdAt DateTime @default(now())
-	updatedAt DateTime @updatedAt
-	cartId    String   @db.VarChar(100)
-	cart      Cart     @relation(fields: [cartId], references: [id])
-	productId String   @db.VarChar(100)
-	product   Product  @relation(fields: [productId], references: [id])
+  id        String   @id @default(uuid()) @db.VarChar(100)
+  quantity  Int      @db.SmallInt
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  cartId    String   @db.VarChar(100)
+  cart      Cart     @relation(fields: [cartId], references: [id])
+  productId String   @db.VarChar(100)
+  product   Product  @relation(fields: [productId], references: [id])
 }
 
 model Order {
-	id           String         @id @default(uuid()) @db.VarChar(100)
-	name         String         @db.VarChar(100)
-	phoneNumber  String         @db.VarChar(20)
-	address      String?        @db.VarChar(200)
-	notes        String?        @db.Text
-	totalPrice   Int
-	createdAt    DateTime       @default(now())
-	updatedAt    DateTime       @updatedAt
-	cartId       String         @db.VarChar(100)
-	cart         Cart           @relation(fields: [cartId], references: [id])
-	Notification Notification[]
+  id           String         @id @default(uuid()) @db.VarChar(100)
+  name         String         @db.VarChar(100)
+  phoneNumber  String         @db.VarChar(20)
+  address      String?        @db.VarChar(200)
+  notes        String?        @db.Text
+  totalPrice   Int
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  cartId       String         @db.VarChar(100)
+  cart         Cart           @relation(fields: [cartId], references: [id])
+  Notification Notification[]
 }
 
 model Notification {
-	id      String  @id @default(uuid()) @db.VarChar(100)
-	status  Boolean @default(false)
-	orderId String  @db.VarChar(100)
-	order   Order   @relation(fields: [orderId], references: [id])
+  id      String  @id @default(uuid()) @db.VarChar(100)
+  status  Boolean @default(false)
+  orderId String  @db.VarChar(100)
+  order   Order   @relation(fields: [orderId], references: [id])
 }
-
-// model OrderDetail {
-//   id          String   @id @default(uuid()) @db.VarChar(100)
-//   name        String   @db.VarChar(100)
-//   phoneNumber String   @db.VarChar(20)
-//   address     String?  @db.VarChar(200)
-//   notes       String   @db.Text
-//   createdAt   DateTime @default(now())
-//   updatedAt   DateTime @updatedAt
-//   orders      Order[]
-// }
