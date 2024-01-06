@@ -5,7 +5,6 @@ import routerIndex from './route/index.js';
 
 const app = express();
 const dirname = path.resolve();
-console.log(dirname);
 
 app.use(express.json());
 
