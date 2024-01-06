@@ -25,11 +25,11 @@ async function create(req) {
 }
 
 async function getAll(req) {
-  const { take = undefined, skip = undefined } = req.query;
+  const { take, skip } = req.query;
 
   const result = await prisma.category.findMany(categoryQuery.getAll(take, skip));
 
-  if (!result.length) {
+  if (!result) {
     throw new ApiErrorHandling(404, 'category not found');
   }
 
