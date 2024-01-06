@@ -12,7 +12,6 @@ async function getAllImage(req, res) {
       { image },
     );
   } catch (e) {
-    console.log(e);
     return responseJson.responseError(
       res,
       e.statusCode || 400,
