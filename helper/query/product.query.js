@@ -25,6 +25,7 @@ function getAll(take, skip) {
           category: true,
         },
       },
+      images: true,
     },
     take: take !== undefined ? Number(take) : undefined,
     skip: skip !== undefined ? Number(skip) : undefined,
