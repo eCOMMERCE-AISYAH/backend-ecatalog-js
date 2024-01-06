@@ -5,7 +5,11 @@ import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 import userQuery from '../../helper/query/user.query.js';
 
 async function register(req) {
-  const { name, username, password } = req.body;
+  const {
+    name, username, password, address, phoneNumber,
+  } = req.body;
+  const guest = username.includes('guest');
+  const token = uuid().toString();
 
   const isUserExist = await prisma.user.count({
     where: {
@@ -18,13 +22,16 @@ async function register(req) {
   }
 
   // Hash Password
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = guest ? null : await bcrypt.hash(password, 10);
 
   const result = await prisma.user.create(
-    userQuery.create(
+    userQuery.register(
       name,
       username,
       hashedPassword,
+      address,
+      phoneNumber,
+      token,
     ),
   );
 
@@ -68,6 +75,18 @@ async function login(req) {
   });
 }
 
+async function getAll(req) {
+  const { take, skip, username } = req.query;
+
+  const result = await prisma.user.findMany(userQuery.getAll(take, skip, username));
+
+  if (!result) {
+    throw new ApiErrorHandling(404, 'user not found');
+  }
+
+  return result;
+}
+
 async function getById(req) {
   const { id } = req.params;
 
@@ -82,7 +101,9 @@ async function getById(req) {
 
 async function update(req) {
   const { id } = req.params;
-  const { name, oldPassword, newPassword } = req.body;
+  const {
+    name, oldPassword, newPassword, address, phoneNumber,
+  } = req.body;
 
   const user = await prisma.user.findUnique({
     where: { id },
@@ -96,7 +117,7 @@ async function update(req) {
   const storedPassword = user.password;
 
   // Update all data
-  if (name && oldPassword && newPassword) {
+  if (name && oldPassword && newPassword && address && phoneNumber) {
     const passwordMatch = await bcrypt.compare(oldPassword, storedPassword);
 
     if (!passwordMatch) {
@@ -104,12 +125,34 @@ async function update(req) {
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-    return userQuery.update(id, { name, password: hashedNewPassword });
+    return userQuery.update(id, {
+      name, password: hashedNewPassword, address, phoneNumber,
+    });
+  }
+
+  // Update name, address, and phone
+  if (name && address && phoneNumber) {
+    return userQuery.update(id, { name, address, phoneNumber });
+  }
+
+  // Update name and address
+  if (name && address) {
+    return userQuery.update(id, { name, address });
   }
 
   // Update only name
   if (name) {
     return userQuery.update(id, { name });
+  }
+
+  // Update only address
+  if (address) {
+    return userQuery.update(id, { address });
+  }
+
+  // Update only phoneNumber
+  if (phoneNumber) {
+    return userQuery.update(id, { phoneNumber });
   }
 
   // Update only password
@@ -142,6 +185,7 @@ async function destroy(req) {
 export default {
   register,
   login,
+  getAll,
   getById,
   update,
   destroy,

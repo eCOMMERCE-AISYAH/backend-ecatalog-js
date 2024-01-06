@@ -1,12 +1,27 @@
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../apiErrorHandling.js';
 
-function create(name, username, hashedPassword) {
+function register(name, username, hashedPassword, address, phoneNumber, token) {
+  const guest = username.includes('guest');
+  const userData = {
+    name: name !== null ? name : null,
+    username,
+    ...(guest ? { token } : {
+      password: hashedPassword, address, phoneNumber, token: null,
+    }),
+  };
+
   return {
-    data: {
-      name,
-      username,
-      password: hashedPassword,
+    data: userData,
+  };
+}
+
+function getAll(take, skip, username) {
+  return {
+    take: take !== undefined ? Number(take) : undefined,
+    skip: skip !== undefined ? Number(skip) : undefined,
+    where: {
+      username: (username !== undefined && username.includes('guest')) ? { startsWith: username } : undefined,
     },
   };
 }
@@ -26,7 +41,7 @@ async function update(id, data) {
   });
 
   if (!result) {
-    throw new ApiErrorHandling(400, 'Failed to update user');
+    throw new ApiErrorHandling(400, 'failed to update user');
   }
 
   return result;
@@ -41,7 +56,8 @@ function destroy(id) {
 }
 
 export default {
-  create,
+  register,
+  getAll,
   getById,
   update,
   destroy,

@@ -39,6 +39,25 @@ async function loginUser(req, res) {
   }
 }
 
+async function getAllUser(req, res) {
+  try {
+    const user = await userService.getAll(req);
+
+    return ResponseJson.responseSuccess(
+      res,
+      200,
+      'success get all user',
+      { user },
+    );
+  } catch (err) {
+    return ResponseJson.responseError(
+      res,
+      err.statusCode || 400,
+      err.message,
+    );
+  }
+}
+
 async function getUserById(req, res) {
   try {
     const user = await userService.getById(req);
@@ -99,6 +118,7 @@ async function deleteUser(req, res) {
 export default {
   registerUser,
   loginUser,
+  getAllUser,
   getUserById,
   updateUser,
   deleteUser,
