@@ -17,8 +17,17 @@ function create(name, description, stock, subCategoryId, price) {
   };
 }
 
-function getAll(take, skip) {
+function getAllByQuery(take, skip, name, subCategory, price) {
   return {
+    take: take !== undefined ? Number(take) : undefined,
+    skip: skip !== undefined ? Number(skip) : undefined,
+    where: {
+      name: name !== undefined ? name : undefined,
+      price: price !== undefined ? Number(price) : undefined,
+      subCategory: {
+        name: subCategory !== undefined ? subCategory : undefined,
+      },
+    },
     include: {
       subCategory: {
         include: {
@@ -27,25 +36,6 @@ function getAll(take, skip) {
       },
       images: true,
     },
-    take: take !== undefined ? Number(take) : undefined,
-    skip: skip !== undefined ? Number(skip) : undefined,
-  };
-}
-
-function getALlBySubCategory(id, take, skip) {
-  return {
-    where: {
-      subCategoryId: id,
-    },
-    include: {
-      subCategory: {
-        include: {
-          category: true,
-        },
-      },
-    },
-    take: take !== undefined ? Number(take) : undefined,
-    skip: skip !== undefined ? Number(skip) : undefined,
   };
 }
 
@@ -103,8 +93,7 @@ function destroy(id) {
 
 export default {
   create,
-  getAll,
-  getALlBySubCategory,
+  getAllByQuery,
   getById,
   update,
   destroy,
