@@ -1,6 +1,7 @@
 import sharp from 'sharp';
 import * as fs from 'fs';
 import prisma from '../../prisma/prismaClient.js';
+import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
 async function create(req) {
   const { path, filename } = req.file;
@@ -12,7 +13,6 @@ async function create(req) {
     })
     .toBuffer();
 
-  // Menyimpan gambar yang telah diompres
   const compressedImagePath = `public/images/${filename}`;
   fs.writeFileSync(compressedImagePath, compressedImageBuffer);
 
@@ -42,7 +42,45 @@ async function getByQuery(req) {
   return result;
 }
 
+async function getById(req) {
+  const { id } = req.params;
+
+  const result = await prisma.productImage.findUnique({
+    where: {
+      id,
+    },
+  });
+
+  if (!result) {
+    throw new ApiErrorHandling(404, 'picture not found');
+  }
+
+  return result;
+}
+
+async function destroy(req) {
+  const { id } = req.params;
+
+  const image = await getById(req);
+  if (!image) {
+    throw new ApiErrorHandling(404, 'image not found for delete');
+  }
+
+  const pathImage = image.image;
+  fs.unlinkSync(pathImage);
+
+  const result = await prisma.productImage.delete({
+    where: {
+      id,
+    },
+  });
+
+  return result;
+}
+
 export default {
   create,
   getByQuery,
+  getById,
+  destroy,
 };

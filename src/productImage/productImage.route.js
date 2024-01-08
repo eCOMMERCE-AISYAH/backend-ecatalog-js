@@ -5,7 +5,9 @@ import imageMulter from '../middleware/productImage.js';
 
 const router = express.Router();
 
+router.get('/api/images/:id', productImageController.getImageById);
 router.get('/api/images', multer({ storage: imageMulter.fileStorageProduct }).single('image'), productImageController.getAllImage);
 router.post('/api/images', multer({ storage: imageMulter.fileStorageProduct }).single('image'), productImageController.createImage);
+router.delete('/api/images/:id', productImageController.deleteImageById);
 
 export default router;

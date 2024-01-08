@@ -20,6 +20,25 @@ async function getAllImage(req, res) {
   }
 }
 
+async function getImageById(req, res) {
+  try {
+    const image = await productImageService.getById(req);
+
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success get image by id',
+      { image },
+    );
+  } catch (e) {
+    return responseJson.responseError(
+      res,
+      e.statusCode || 400,
+      e.message,
+    );
+  }
+}
+
 async function createImage(req, res) {
   try {
     const image = await productImageService.create(req);
@@ -39,7 +58,28 @@ async function createImage(req, res) {
   }
 }
 
+async function deleteImageById(req, res) {
+  try {
+    const image = await productImageService.destroy(req);
+
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success delete image',
+      { image },
+    );
+  } catch (e) {
+    return responseJson.responseError(
+      res,
+      e.statusCode || 400,
+      e.message,
+    );
+  }
+}
+
 export default {
   getAllImage,
   createImage,
+  getImageById,
+  deleteImageById,
 };
