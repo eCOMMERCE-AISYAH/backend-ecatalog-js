@@ -20,33 +20,14 @@ async function createProduct(req, res) {
   }
 }
 
-async function getAllProducts(req, res) {
+async function getAllProductsByQuery(req, res) {
   try {
-    const product = await productService.getAll(req);
+    const product = await productService.getAllByQuery(req);
 
     return ResponseJson.responseSuccess(
       res,
       200,
       'success get all products',
-      { product },
-    );
-  } catch (err) {
-    return ResponseJson.responseError(
-      res,
-      err.statusCode || 400,
-      err.message,
-    );
-  }
-}
-
-async function getAllProductsBySubCategory(req, res) {
-  try {
-    const product = await productService.getAllBySubCategory(req);
-
-    return ResponseJson.responseSuccess(
-      res,
-      200,
-      'success get products by sub category',
       { product },
     );
   } catch (err) {
@@ -117,8 +98,7 @@ async function deleteProduct(req, res) {
 
 export default {
   createProduct,
-  getAllProducts,
-  getAllProductsBySubCategory,
+  getAllProductsByQuery,
   getProductById,
   updateProduct,
   deleteProduct,
