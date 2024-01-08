@@ -12,11 +12,11 @@ function create(name, categoryId) {
 
 function getAll(take, skip) {
   return {
+    take: take !== undefined ? Number(take) : undefined,
+    skip: skip !== undefined ? Number(skip) : undefined,
     include: {
       category: true,
     },
-    take: take !== undefined ? Number(take) : undefined,
-    skip: skip !== undefined ? Number(skip) : undefined,
   };
 }
 

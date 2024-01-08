@@ -38,26 +38,17 @@ async function create(req) {
   return result;
 }
 
-async function getAll(req) {
-  const { take, skip } = req.query;
+async function getAllByQuery(req) {
+  const {
+    take, skip, name, subCategory, price,
+  } = req.query;
 
-  const result = await prisma.product.findMany(productQuery.getAll(take, skip));
+  const result = await prisma.product.findMany(
+    productQuery.getAllByQuery(take, skip, name, subCategory, price),
+  );
 
   if (!result) {
     throw new ApiErrorHandling(404, 'product not found');
-  }
-
-  return result;
-}
-
-async function getAllBySubCategory(req) {
-  const { id } = req.params;
-  const { take = undefined, skip = undefined } = req.query;
-
-  const result = await prisma.product.findMany(productQuery.getALlBySubCategory(id, take, skip));
-
-  if (!result) {
-    throw new ApiErrorHandling(404, 'products not found');
   }
 
   return result;
@@ -117,8 +108,7 @@ async function destroy(req) {
 
 export default {
   create,
-  getAll,
-  getAllBySubCategory,
+  getAllByQuery,
   getById,
   update,
   destroy,
