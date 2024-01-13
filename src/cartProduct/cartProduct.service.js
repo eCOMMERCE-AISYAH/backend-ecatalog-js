@@ -2,13 +2,13 @@ import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
 async function getAllByQuery(req) {
-  const { take, skip, cartid } = req.query;
+  const { take, skip, userid } = req.query;
 
   const result = await prisma.cartProduct.findMany({
     take: take !== undefined ? Number(take) : undefined,
     skip: skip !== undefined ? Number(skip) : undefined,
     where: {
-      cartId: cartid !== undefined ? cartid : undefined,
+      userId: userid !== undefined ? userid : undefined,
     },
     include: {
       cart: true,
@@ -25,7 +25,7 @@ async function get(id) {
       id,
     },
     include: {
-      cart: true,
+      user: true,
       product: true,
     },
   });
@@ -38,15 +38,15 @@ async function get(id) {
 }
 async function create(req) {
   const {
-    quantity, cartId, productId, notes,
+    quantity, userId, productId, notes,
   } = req.body;
 
   const data = {
     quantity,
     notes,
-    cart: {
+    user: {
       connect: {
-        id: cartId,
+        id: userId,
       },
     },
     product: {
@@ -61,7 +61,7 @@ async function create(req) {
       ...data,
     },
     include: {
-      cart: true,
+      user: true,
       product: true,
     },
   });
@@ -75,15 +75,15 @@ async function create(req) {
 
 async function update(id, req) {
   const {
-    quantity, cartId, productId, notes,
+    quantity, userId, productId, notes,
   } = req.body;
 
   const data = {
     quantity,
     notes,
-    cart: {
+    user: {
       connect: {
-        id: cartId,
+        id: userId,
       },
     },
     product: {
@@ -101,7 +101,7 @@ async function update(id, req) {
       ...data,
     },
     include: {
-      cart: true,
+      user: true,
       product: true,
     },
   });
