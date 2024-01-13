@@ -1,24 +1,26 @@
 import express from 'express';
 import cartProductRoute from '../cartProduct/cartProduct.route.js';
 import categoryRoute from '../category/category.route.js';
-import cartRoute from '../cart/cart.route.js';
 import subCategoryRoute from '../subCategory/subCategory.route.js';
 import orderRoute from '../order/order.route.js';
 import productRoute from '../product/product.route.js';
 import userRoute from '../user/user.route.js';
 import notificationRoute from '../notification/notification.route.js';
 import productImageRoute from '../productImage/productImage.route.js';
+import orderItemRoute from '../orderItem/orderItem.route.js';
 
 const router = express.Router();
 
 // ORDER
 router.use(orderRoute);
 
+// ORDER ITEM
+router.use(orderItemRoute);
+
 // NOTIFICATION
 router.use(notificationRoute);
 
 // CART
-router.use(cartRoute);
 
 // CART PRODUCT
 router.use(cartProductRoute);

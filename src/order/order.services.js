@@ -3,7 +3,7 @@ import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
 async function getAllByQuery(req) {
   const {
-    take, skip, name, phonenumber, cartid,
+    take, skip, name, phonenumber, userid,
   } = req.query;
 
   const result = await prisma.order.findMany({
@@ -12,10 +12,10 @@ async function getAllByQuery(req) {
     where: {
       name: name !== undefined ? name : undefined,
       phoneNumber: phonenumber !== undefined ? phonenumber : undefined,
-      cartId: cartid !== undefined ? cartid : undefined,
+      userId: userid !== undefined ? userid : undefined,
     },
     include: {
-      cart: true,
+      user: true,
     },
   });
 
@@ -31,18 +31,8 @@ async function get(id) {
     where: {
       id,
     },
-    select: {
-      id: true,
-      name: true,
-      phoneNumber: true,
-      address: true,
-      notes: true,
-      cart: {
-        select: {
-          id: true,
-          cookieId: true,
-        },
-      },
+    include: {
+      user: true,
     },
   });
 
@@ -55,7 +45,7 @@ async function get(id) {
 
 async function create(req) {
   const {
-    name, phoneNumber, address, notes, totalPrice, cartId,
+    name, phoneNumber, address, notes, totalPrice, userId, status, description,
   } = req.body;
 
   const data = {
@@ -64,9 +54,11 @@ async function create(req) {
     address,
     notes,
     totalPrice,
-    cart: {
+    status,
+    description,
+    user: {
       connect: {
-        id: cartId,
+        id: userId,
       },
     },
   };
@@ -76,7 +68,7 @@ async function create(req) {
       ...data,
     },
     include: {
-      cart: true,
+      user: true,
     },
 
   });
@@ -86,6 +78,19 @@ async function create(req) {
   }
 
   return result;
+}
+
+async function update(id, req) {
+  const { description, status } = req.body;
+
+  const result = await prisma.order.update({
+    where: {
+      id,
+    },
+    data: {
+
+    },
+  });
 }
 
 async function destroy(id) {
