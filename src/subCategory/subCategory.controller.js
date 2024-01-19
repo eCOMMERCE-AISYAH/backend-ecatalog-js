@@ -39,9 +39,9 @@ async function getAllSubCategory(req, res) {
   }
 }
 
-async function getSubCategoryById(req, res) {
+async function getSubCategoryDetail(req, res) {
   try {
-    const subCategory = await subCategoryService.getById(req);
+    const subCategory = await subCategoryService.getDetail(req);
 
     return ResponseJson.responseSuccess(
       res,
@@ -99,7 +99,7 @@ async function deleteSubCategory(req, res) {
 export default {
   createSubCategory,
   getAllSubCategory,
-  getSubCategoryById,
+  getSubCategoryDetail,
   updateSubCategory,
   deleteSubCategory,
 };

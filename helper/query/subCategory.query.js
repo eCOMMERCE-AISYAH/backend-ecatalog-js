@@ -1,7 +1,8 @@
-function create(name, categoryId) {
+function create(name, slug, categoryId) {
   return {
     data: {
       name,
+      slug,
       categoryId,
     },
     include: {
@@ -20,10 +21,10 @@ function getAll(take, skip) {
   };
 }
 
-function getById(id) {
+function getDetail(slug) {
   return {
     where: {
-      id,
+      slug,
     },
     include: {
       category: true,
@@ -31,10 +32,11 @@ function getById(id) {
   };
 }
 
-function update(id, name) {
+function update(id, name, slug) {
   return {
     data: {
       name,
+      slug,
     },
     where: {
       id,
@@ -59,7 +61,7 @@ function destroy(id) {
 export default {
   create,
   getAll,
-  getById,
+  getDetail,
   update,
   destroy,
 };
