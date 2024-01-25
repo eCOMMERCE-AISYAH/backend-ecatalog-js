@@ -39,9 +39,9 @@ async function getAllProductsByQuery(req, res) {
   }
 }
 
-async function getProductById(req, res) {
+async function getProductDetail(req, res) {
   try {
-    const product = await productService.getById(req);
+    const product = await productService.getDetail(req);
 
     return ResponseJson.responseSuccess(
       res,
@@ -99,7 +99,7 @@ async function deleteProduct(req, res) {
 export default {
   createProduct,
   getAllProductsByQuery,
-  getProductById,
+  getProductDetail,
   updateProduct,
   deleteProduct,
 };

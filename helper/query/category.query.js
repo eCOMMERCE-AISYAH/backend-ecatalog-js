@@ -1,7 +1,8 @@
-function create(name) {
+function create(name, slug) {
   return {
     data: {
       name,
+      slug,
     },
   };
 }
@@ -13,18 +14,19 @@ function getAll(take, skip) {
   };
 }
 
-function getById(id) {
+function getDetail(slug) {
   return {
     where: {
-      id,
+      slug,
     },
   };
 }
 
-function update(id, name) {
+function update(id, name, slug) {
   return {
     data: {
       name,
+      slug,
     },
     where: {
       id,
@@ -43,7 +45,7 @@ function destroy(id) {
 export default {
   create,
   getAll,
-  getById,
+  getDetail,
   update,
   destroy,
 };

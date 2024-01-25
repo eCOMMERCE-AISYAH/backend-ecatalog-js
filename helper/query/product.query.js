@@ -1,7 +1,8 @@
-function create(name, description, stock, subCategoryId, price) {
+function create(name, slug, description, stock, subCategoryId, price) {
   return {
     data: {
       name,
+      slug,
       description,
       stock,
       subCategoryId,
@@ -39,10 +40,10 @@ function getAllByQuery(take, skip, name, subCategory, price) {
   };
 }
 
-function getById(id) {
+function getDetail(slug) {
   return {
     where: {
-      id,
+      slug,
     },
     include: {
       subCategory: {
@@ -54,10 +55,11 @@ function getById(id) {
   };
 }
 
-function update(id, name, description, stock, subCategoryId, price) {
+function update(id, name, slug, description, stock, subCategoryId, price) {
   return {
     data: {
       name,
+      slug,
       description,
       stock,
       subCategoryId,
@@ -94,7 +96,7 @@ function destroy(id) {
 export default {
   create,
   getAllByQuery,
-  getById,
+  getDetail,
   update,
   destroy,
 };

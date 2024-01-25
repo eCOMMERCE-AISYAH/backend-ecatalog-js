@@ -39,9 +39,9 @@ async function getAllCategory(req, res) {
   }
 }
 
-async function getCategoryById(req, res) {
+async function getCategoryDetail(req, res) {
   try {
-    const category = await categoryService.getById(req);
+    const category = await categoryService.getDetail(req);
 
     return ResponseJson.responseSuccess(
       res,
@@ -99,7 +99,7 @@ async function deleteCategory(req, res) {
 export default {
   createCategory,
   getAllCategory,
-  getCategoryById,
+  getCategoryDetail,
   updateCategory,
   deleteCategory,
 };

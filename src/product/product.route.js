@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/api/products', productController.createProduct);
 router.get('/api/products', productController.getAllProductsByQuery);
-router.get('/api/products/:id', productController.getProductById);
+router.get('/api/products/:slug', productController.getProductDetail);
 router.patch('/api/products/:id', productController.updateProduct);
 router.delete('/api/products/:id', productController.deleteProduct);
 

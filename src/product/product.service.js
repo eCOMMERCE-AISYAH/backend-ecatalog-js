@@ -1,3 +1,4 @@
+import slugify from 'slugify';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 import productQuery from '../../helper/query/product.query.js';
@@ -10,6 +11,7 @@ async function create(req) {
     subCategoryId,
     price,
   } = req.body;
+  const slug = slugify(name, { lower: true });
 
   const isExist = await prisma.product.count({
     where: {
@@ -24,6 +26,7 @@ async function create(req) {
   const result = await prisma.product.create(
     productQuery.create(
       name,
+      slug,
       description,
       stock,
       subCategoryId,
@@ -54,10 +57,10 @@ async function getAllByQuery(req) {
   return result;
 }
 
-async function getById(req) {
-  const { id } = req.params;
+async function getDetail(req) {
+  const { slug } = req.params;
 
-  const result = await prisma.product.findUnique(productQuery.getById(id));
+  const result = await prisma.product.findUnique(productQuery.getDetail(slug));
 
   if (!result) {
     throw new ApiErrorHandling(404, 'product not found');
@@ -75,11 +78,13 @@ async function update(req) {
     subCategoryId,
     price,
   } = req.body;
+  const slug = slugify(name, { lower: true });
 
   const result = await prisma.product.update(
     productQuery.update(
       id,
       name,
+      slug,
       description,
       stock,
       subCategoryId,
@@ -109,7 +114,7 @@ async function destroy(req) {
 export default {
   create,
   getAllByQuery,
-  getById,
+  getDetail,
   update,
   destroy,
 };
