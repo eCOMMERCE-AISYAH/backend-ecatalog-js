@@ -9,7 +9,7 @@ async function registerUser(req, res) {
       res,
       201,
       'success to register',
-      { user },
+      user,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -28,7 +28,7 @@ async function loginUser(req, res) {
       res,
       200,
       'success to login',
-      { user },
+      user,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -47,7 +47,7 @@ async function getAllUser(req, res) {
       res,
       200,
       'success get all user',
-      { user },
+      user,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -66,7 +66,7 @@ async function getUserById(req, res) {
       res,
       200,
       'success get user detail',
-      { user },
+      user,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -85,7 +85,26 @@ async function updateUser(req, res) {
       res,
       200,
       'success update user',
-      { user },
+      user,
+    );
+  } catch (err) {
+    return ResponseJson.responseError(
+      res,
+      err.statusCode || 400,
+      err.message,
+    );
+  }
+}
+
+async function logoutUser(req, res) {
+  try {
+    const user = await userService.logout(req);
+
+    return ResponseJson.responseSuccess(
+      res,
+      200,
+      'success logout',
+      user,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -104,7 +123,7 @@ async function deleteUser(req, res) {
       res,
       200,
       'success delete user',
-      { user },
+      user,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -121,5 +140,6 @@ export default {
   getAllUser,
   getUserById,
   updateUser,
+  logoutUser,
   deleteUser,
 };

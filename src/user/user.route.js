@@ -8,6 +8,7 @@ router.post('/api/users/login', userController.loginUser);
 router.get('/api/users', userController.getAllUser);
 router.get('/api/users/:id', userController.getUserById);
 router.patch('/api/users/:id', userController.updateUser);
+router.post('/api/users/logout', userController.logoutUser);
 router.delete('/api/users/:id', userController.deleteUser);
 
 export default router;
