@@ -1,13 +1,17 @@
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../apiErrorHandling.js';
 
-function register(name, username, hashedPassword, address, phoneNumber, token) {
+function register(name, username, hashedPassword, address, phoneNumber, role, token) {
   const guest = username.includes('guest');
   const userData = {
     name: name !== null ? name : null,
     username,
-    ...(guest ? { token } : {
-      password: hashedPassword, address, phoneNumber, token: null,
+    ...(guest ? { token, role } : {
+      password: hashedPassword,
+      address,
+      phoneNumber,
+      role: guest ? role : 'USER',
+      token: null,
     }),
   };
 

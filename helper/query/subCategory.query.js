@@ -32,11 +32,12 @@ function getDetail(slug) {
   };
 }
 
-function update(id, name, slug) {
+function update(id, name, categoryId, slug) {
   return {
     data: {
       name,
       slug,
+      categoryId,
     },
     where: {
       id,

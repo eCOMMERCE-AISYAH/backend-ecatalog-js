@@ -9,7 +9,7 @@ async function createSubCategory(req, res) {
       res,
       201,
       'success create sub category',
-      { subCategory },
+      subCategory,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -28,7 +28,7 @@ async function getAllSubCategory(req, res) {
       res,
       200,
       'success get all sub category',
-      { subCategory },
+      subCategory,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -47,7 +47,7 @@ async function getSubCategoryDetail(req, res) {
       res,
       200,
       'success get sub category detail',
-      { subCategory },
+      subCategory,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -66,7 +66,7 @@ async function updateSubCategory(req, res) {
       res,
       200,
       'success update sub category',
-      { subCategory },
+      subCategory,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -85,7 +85,7 @@ async function deleteSubCategory(req, res) {
       res,
       200,
       'success delete sub category',
-      { subCategory },
+      subCategory,
     );
   } catch (err) {
     return ResponseJson.responseError(
