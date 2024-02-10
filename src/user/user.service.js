@@ -6,7 +6,7 @@ import userQuery from '../../helper/query/user.query.js';
 
 async function register(req) {
   const {
-    name, username, password, address, phoneNumber,
+    name, username, password, address, phoneNumber, role,
   } = req.body;
   const guest = username.includes('guest');
   const token = uuid().toString();
@@ -31,6 +31,7 @@ async function register(req) {
       hashedPassword,
       address,
       phoneNumber,
+      role,
       token,
     ),
   );
@@ -170,6 +171,26 @@ async function update(req) {
   throw new ApiErrorHandling(400, 'Invalid update request');
 }
 
+async function logout(req) {
+  const { id } = req.body;
+  console.log(id);
+
+  const result = await prisma.user.update({
+    data: {
+      token: null,
+    },
+    where: {
+      id,
+    },
+  });
+
+  if (!result) {
+    throw new ApiErrorHandling(404, 'logout failed');
+  }
+
+  return result;
+}
+
 async function destroy(req) {
   const { id } = req.params;
 
@@ -188,5 +209,6 @@ export default {
   getAll,
   getById,
   update,
+  logout,
   destroy,
 };

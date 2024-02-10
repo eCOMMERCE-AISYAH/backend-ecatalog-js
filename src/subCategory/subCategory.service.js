@@ -52,10 +52,12 @@ async function getDetail(req) {
 
 async function update(req) {
   const { id } = req.params;
-  const { name } = req.body;
+  const { name, categoryId } = req.body;
   const slug = slugify(name, { lower: true });
 
-  const result = await prisma.subCategory.update(subCategoryQuery.update(id, name, slug));
+  const result = await prisma.subCategory.update(
+    subCategoryQuery.update(id, name, categoryId, slug),
+  );
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to update sub category');

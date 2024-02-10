@@ -9,7 +9,7 @@ async function createProduct(req, res) {
       res,
       201,
       'success create product',
-      { product },
+      product,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -28,7 +28,7 @@ async function getAllProductsByQuery(req, res) {
       res,
       200,
       'success get all products',
-      { product },
+      product,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -47,7 +47,7 @@ async function getProductDetail(req, res) {
       res,
       200,
       'success get product detail',
-      { product },
+      product,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -66,7 +66,7 @@ async function updateProduct(req, res) {
       res,
       200,
       'success update product',
-      { product },
+      product,
     );
   } catch (err) {
     return ResponseJson.responseError(
@@ -85,7 +85,7 @@ async function deleteProduct(req, res) {
       res,
       200,
       'success delete product',
-      { product },
+      product,
     );
   } catch (err) {
     return ResponseJson.responseError(
