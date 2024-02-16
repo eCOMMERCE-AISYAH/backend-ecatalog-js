@@ -37,6 +37,23 @@ async function getOrderById(req, res) {
       e.message,
     );
   }
+} async function updateOrderById(req, res) {
+  try {
+    const order = await orderServices.update(req.params.id, req);
+
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success update order',
+      { order },
+    );
+  } catch (e) {
+    return responseJson.responseError(
+      res,
+      e.statusCode || 404,
+      e.message,
+    );
+  }
 }
 
 async function createOrder(req, res) {
@@ -82,4 +99,5 @@ export default {
   getOrderById,
   createOrder,
   deleteOrder,
+  updateOrderById,
 };
