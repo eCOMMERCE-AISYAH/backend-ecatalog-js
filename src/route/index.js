@@ -7,15 +7,15 @@ import productRoute from '../product/product.route.js';
 import userRoute from '../user/user.route.js';
 import notificationRoute from '../notification/notification.route.js';
 import productImageRoute from '../productImage/productImage.route.js';
-import orderItemRoute from '../orderItem/orderItem.route.js';
+import orderHistoryRoute from '../orderHistory/orderHistory.route.js';
 
 const router = express.Router();
 
 // ORDER
 router.use(orderRoute);
 
-// ORDER ITEM
-router.use(orderItemRoute);
+// ORDER HISTORY
+router.use(orderHistoryRoute);
 
 // NOTIFICATION
 router.use(notificationRoute);
