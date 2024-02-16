@@ -1,9 +1,10 @@
+import cryptoRandomString from 'crypto-random-string';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
 async function getAllByQuery(req) {
   const {
-    take, skip, name, phonenumber, userid,
+    take, skip, name, phonenumber, userid, status,
   } = req.query;
 
   const result = await prisma.order.findMany({
@@ -13,6 +14,7 @@ async function getAllByQuery(req) {
       name: name !== undefined ? name : undefined,
       phoneNumber: phonenumber !== undefined ? phonenumber : undefined,
       userId: userid !== undefined ? userid : undefined,
+      status: status !== undefined ? status : undefined,
     },
     include: {
       user: true,
@@ -48,6 +50,15 @@ async function create(req) {
     name, phoneNumber, address, notes, totalPrice, userId, status, description,
   } = req.body;
 
+  const currentDate = new Date();
+  const [day, month, year] = [
+    'getDate',
+    'getMonth',
+    'getFullYear',
+  ].map((method) => currentDate[method]());
+  const randomString = cryptoRandomString({ length: 5, type: 'distinguishable' });
+  const invoice = `${year.substr(2)}${month + 1}${day}${randomString}`;
+
   const data = {
     name,
     phoneNumber,
@@ -56,6 +67,7 @@ async function create(req) {
     totalPrice,
     status,
     description,
+    invoice,
     user: {
       connect: {
         id: userId,
@@ -88,9 +100,12 @@ async function update(id, req) {
       id,
     },
     data: {
-
+      description,
+      status,
     },
   });
+
+  return result;
 }
 
 async function destroy(id) {
@@ -113,4 +128,5 @@ export default {
   getAllByQuery,
   create,
   destroy,
+  update,
 };
