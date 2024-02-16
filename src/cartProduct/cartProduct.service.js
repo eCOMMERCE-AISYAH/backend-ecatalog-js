@@ -11,7 +11,6 @@ async function getAllByQuery(req) {
       userId: userid !== undefined ? userid : undefined,
     },
     include: {
-      cart: true,
       product: true,
     },
   });
