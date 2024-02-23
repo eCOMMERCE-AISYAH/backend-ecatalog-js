@@ -5,7 +5,6 @@ import subCategoryRoute from '../subCategory/subCategory.route.js';
 import orderRoute from '../order/order.route.js';
 import productRoute from '../product/product.route.js';
 import userRoute from '../user/user.route.js';
-import notificationRoute from '../notification/notification.route.js';
 import productImageRoute from '../productImage/productImage.route.js';
 import orderHistoryRoute from '../orderHistory/orderHistory.route.js';
 
@@ -16,11 +15,6 @@ router.use(orderRoute);
 
 // ORDER HISTORY
 router.use(orderHistoryRoute);
-
-// NOTIFICATION
-router.use(notificationRoute);
-
-// CART
 
 // CART PRODUCT
 router.use(cartProductRoute);
