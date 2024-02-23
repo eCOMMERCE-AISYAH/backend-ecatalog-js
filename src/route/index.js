@@ -16,8 +16,6 @@ router.use(orderRoute);
 // ORDER HISTORY
 router.use(orderHistoryRoute);
 
-// CART
-
 // CART PRODUCT
 router.use(cartProductRoute);
 
