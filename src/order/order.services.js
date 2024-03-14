@@ -57,7 +57,7 @@ async function create(req) {
     'getFullYear',
   ].map((method) => currentDate[method]());
   const randomString = cryptoRandomString({ length: 5, type: 'distinguishable' });
-  const invoice = `${year.substr(2)}${month + 1}${day}${randomString}`;
+  const invoice = `${year.toString().substr(2)}${month + 1}${day}${randomString}`;
 
   const data = {
     name,
