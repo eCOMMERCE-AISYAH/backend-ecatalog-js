@@ -2,10 +2,15 @@ import express from 'express';
 import 'dotenv/config';
 import path from 'path';
 import morgan from 'morgan';
+import cors from 'cors';
 import routerIndex from './route/index.js';
 
 const app = express();
 const dirname = path.resolve();
+app.use(cors({
+  credentials: false,
+  origin: '*',
+}));
 app.use(morgan('combined'));
 
 app.use(express.json());
