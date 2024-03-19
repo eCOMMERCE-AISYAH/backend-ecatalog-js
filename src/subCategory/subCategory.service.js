@@ -39,9 +39,13 @@ async function getAll(req) {
 }
 
 async function getDetail(req) {
-  const { slug } = req.params;
+  const { id } = req.params;
 
-  const result = await prisma.subCategory.findUnique(subCategoryQuery.getDetail(slug));
+  const result = await prisma.subCategory.findUnique({
+    where: {
+      id,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(404, 'sub category not found');
