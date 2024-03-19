@@ -41,11 +41,18 @@ async function getAll(req) {
 async function getById(req) {
   const { id } = req.params;
 
-  const result = await prisma.category.findUnique(categoryQuery.getById(id));
+  const result = await prisma.category.findUnique({
+    where: {
+      id,
+    },
+    include: {
+      subCategories: true,
+    },
+  });
 
-  if (!result) {
-    throw new ApiErrorHandling(404, 'category not found');
-  }
+  // if (!result) {
+  //   throw new ApiErrorHandling(404, 'category not found');
+  // }
 
   return result;
 }

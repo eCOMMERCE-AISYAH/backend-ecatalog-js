@@ -19,9 +19,6 @@ function getById(id) {
     where: {
       id,
     },
-    include: {
-      subCategory: true,
-    },
   };
 }
 
