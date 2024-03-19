@@ -38,7 +38,7 @@ router.get('/hello', (req, res) => {
   res.status(200).json({
     status: 'Success',
     data: {
-      message: 'Hello World',
+      message: 'Hello World ci cd success',
     },
   });
 });
