@@ -58,9 +58,13 @@ async function getAllByQuery(req) {
 }
 
 async function getDetail(req) {
-  const { slug } = req.params;
+  const { id } = req.params;
 
-  const result = await prisma.product.findUnique(productQuery.getDetail(slug));
+  const result = await prisma.product.findUnique({
+    where: {
+      id,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(404, 'product not found');
