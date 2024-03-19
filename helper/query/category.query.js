@@ -14,6 +14,14 @@ function getAll(take, skip) {
   };
 }
 
+function getById(id) {
+  return {
+    where: {
+      id,
+    },
+  };
+}
+
 function getDetail(slug) {
   return {
     where: {
@@ -48,4 +56,5 @@ export default {
   getDetail,
   update,
   destroy,
+  getById,
 };
