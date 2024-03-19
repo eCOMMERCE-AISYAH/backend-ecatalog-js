@@ -14,6 +14,17 @@ function getAll(take, skip) {
   };
 }
 
+function getById(id) {
+  return {
+    where: {
+      id,
+    },
+    include: {
+      subCategory: true,
+    },
+  };
+}
+
 function getDetail(slug) {
   return {
     where: {
@@ -48,4 +59,5 @@ export default {
   getDetail,
   update,
   destroy,
+  getById,
 };

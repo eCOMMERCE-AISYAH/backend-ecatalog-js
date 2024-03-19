@@ -58,6 +58,25 @@ async function getCategoryDetail(req, res) {
   }
 }
 
+async function getCategoryById(req, res) {
+  try {
+    const category = await categoryService.getById(req);
+
+    return ResponseJson.responseSuccess(
+      res,
+      200,
+      'success get category by id',
+      category,
+    );
+  } catch (err) {
+    return ResponseJson.responseError(
+      res,
+      err.statusCode || 400,
+      err.message,
+    );
+  }
+}
+
 async function updateCategory(req, res) {
   try {
     const category = await categoryService.update(req);
@@ -102,4 +121,5 @@ export default {
   getCategoryDetail,
   updateCategory,
   deleteCategory,
+  getCategoryById,
 };

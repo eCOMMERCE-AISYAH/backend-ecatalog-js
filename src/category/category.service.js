@@ -38,6 +38,18 @@ async function getAll(req) {
   return result;
 }
 
+async function getById(req) {
+  const { id } = req.params;
+
+  const result = await prisma.category.findUnique(categoryQuery.getById(id));
+
+  if (!result) {
+    throw new ApiErrorHandling(404, 'category not found');
+  }
+
+  return result;
+}
+
 async function getDetail(req) {
   const { slug } = req.params;
 
@@ -82,4 +94,5 @@ export default {
   getDetail,
   update,
   destroy,
+  getById,
 };
