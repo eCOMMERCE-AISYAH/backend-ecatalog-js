@@ -51,6 +51,7 @@ function getDetail(slug) {
           category: true,
         },
       },
+      images: true,
     },
   };
 }
