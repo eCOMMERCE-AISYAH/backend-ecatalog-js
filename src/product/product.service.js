@@ -64,6 +64,9 @@ async function getDetail(req) {
     where: {
       id,
     },
+    include: {
+      images: true,
+    },
   });
 
   if (!result) {
