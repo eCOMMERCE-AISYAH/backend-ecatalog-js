@@ -23,7 +23,7 @@ function getAllByQuery(take, skip, name, subCategory, price) {
     take: take !== undefined ? Number(take) : undefined,
     skip: skip !== undefined ? Number(skip) : undefined,
     where: {
-      name: name !== undefined ? name : undefined,
+      name: name !== undefined ? { contains: name } : undefined,
       price: price !== undefined ? Number(price) : undefined,
       subCategory: {
         name: subCategory !== undefined ? subCategory : undefined,
