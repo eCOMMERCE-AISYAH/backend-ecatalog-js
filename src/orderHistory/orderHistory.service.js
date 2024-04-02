@@ -20,30 +20,36 @@ async function getAllByQuery(req) {
 }
 
 async function create(req) {
-  const {
-    productName, category, subCategory, quantity, productImage, orderId,
-  } = req.body;
+  const requestData = req.body.data;
 
-  const data = {
-    productName,
-    category,
-    subCategory,
-    quantity,
-    productImage,
-    order: {
-      connect: {
-        id: orderId,
+  const createPromises = requestData.map(async (item) => {
+    const {
+      productName, category, subCategory, quantity, productImage, orderId,
+    } = item;
+
+    const data = {
+      productName,
+      category,
+      subCategory,
+      quantity,
+      productImage,
+      order: {
+        connect: {
+          id: orderId,
+        },
       },
-    },
-  };
+    };
 
-  const result = await prisma.orderHistory.create({
-    data: {
-      ...data,
-    },
+    return prisma.orderHistory.create({
+      data: {
+        ...data,
+      },
+    });
   });
 
-  return result;
+  const results = await Promise.all(createPromises);
+  console.log(results);
+  return results;
 }
 
 export default {
