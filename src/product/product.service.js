@@ -1,7 +1,6 @@
 import slugify from 'slugify';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
-import productQuery from '../../helper/query/product.query.js';
 
 async function create(req) {
   const {
@@ -23,16 +22,23 @@ async function create(req) {
     throw new ApiErrorHandling(400, 'product is exist');
   }
 
-  const result = await prisma.product.create(
-    productQuery.create(
+  const result = await prisma.product.create({
+    data: {
       name,
       slug,
       description,
       stock,
       subCategoryId,
       price,
-    ),
-  );
+    },
+    include: {
+      subCategory: {
+        include: {
+          category: true,
+        },
+      },
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'cannot create product');
@@ -46,9 +52,25 @@ async function getAllByQuery(req) {
     take, skip, name, subCategory, price,
   } = req.query;
 
-  const result = await prisma.product.findMany(
-    productQuery.getAllByQuery(take, skip, name, subCategory, price),
-  );
+  const result = await prisma.product.findMany({
+    take: take !== undefined ? Number(take) : undefined,
+    skip: skip !== undefined ? Number(skip) : undefined,
+    where: {
+      name: name !== undefined ? { contains: name } : undefined,
+      price: price !== undefined ? Number(price) : undefined,
+      subCategory: {
+        name: subCategory !== undefined ? subCategory : undefined,
+      },
+    },
+    include: {
+      subCategory: {
+        include: {
+          category: true,
+        },
+      },
+      images: true,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(404, 'product not found');
@@ -65,6 +87,11 @@ async function getDetail(req) {
       id,
     },
     include: {
+      subCategory: {
+        include: {
+          category: true,
+        },
+      },
       images: true,
     },
   });
@@ -88,15 +115,26 @@ async function update(req) {
   const slug = slugify(name, { lower: true });
 
   const result = await prisma.product.update(
-    productQuery.update(
-      id,
-      name,
-      slug,
-      description,
-      stock,
-      subCategoryId,
-      price,
-    ),
+    productQuery.update({
+      data: {
+        name,
+        slug,
+        description,
+        stock,
+        subCategoryId,
+        price,
+      },
+      where: {
+        id,
+      },
+      include: {
+        subCategory: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    }),
   );
 
   if (!result) {
@@ -109,7 +147,18 @@ async function update(req) {
 async function destroy(req) {
   const { id } = req.params;
 
-  const result = await prisma.product.delete(productQuery.destroy(id));
+  const result = await prisma.product.delete({
+    where: {
+      id,
+    },
+    include: {
+      subCategory: {
+        include: {
+          category: true,
+        },
+      },
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to delete product');
