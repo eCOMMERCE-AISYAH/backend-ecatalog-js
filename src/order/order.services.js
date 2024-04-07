@@ -1,6 +1,7 @@
 import cryptoRandomString from 'crypto-random-string';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
+import orderHistoryService from '../orderHistory/orderHistory.service.js';
 
 async function getAllByQuery(req) {
   const {
@@ -35,6 +36,7 @@ async function get(id) {
     },
     include: {
       user: true,
+      orderHistory: true,
     },
   });
 
@@ -88,6 +90,12 @@ async function create(req) {
   if (!result) {
     throw new ApiErrorHandling(500, 'internal server error');
   }
+
+  // CREATE ORDER HISTORY
+  orderHistoryService.create({
+    orderId: result.id,
+    userId: result.user.id,
+  });
 
   return result;
 }
