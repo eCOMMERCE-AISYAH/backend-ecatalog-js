@@ -74,34 +74,15 @@ async function create(req) {
 
 async function update(id, req) {
   const {
-    quantity, userId, productId, notes,
-  } = req.body;
-
-  const data = {
     quantity,
-    notes,
-    user: {
-      connect: {
-        id: userId,
-      },
-    },
-    product: {
-      connect: {
-        id: productId,
-      },
-    },
-  };
+  } = req.body;
 
   const result = await prisma.cartProduct.update({
     where: {
       id,
     },
     data: {
-      ...data,
-    },
-    include: {
-      user: true,
-      product: true,
+      quantity,
     },
   });
 
