@@ -1,7 +1,6 @@
 import slugify from 'slugify';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
-import categoryQuery from '../../helper/query/category.query.js';
 
 async function create(req) {
   const { name } = req.body;
@@ -17,7 +16,12 @@ async function create(req) {
     throw new ApiErrorHandling(400, 'category is exist');
   }
 
-  const result = await prisma.category.create(categoryQuery.create(name, slug));
+  const result = await prisma.category.create({
+    data: {
+      name,
+      slug,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to create category');
@@ -29,7 +33,10 @@ async function create(req) {
 async function getAll(req) {
   const { take, skip } = req.query;
 
-  const result = await prisma.category.findMany(categoryQuery.getAll(take, skip));
+  const result = await prisma.category.findMany({
+    take: take !== undefined ? Number(take) : undefined,
+    skip: skip !== undefined ? Number(skip) : undefined,
+  });
 
   if (!result) {
     throw new ApiErrorHandling(404, 'category not found');
@@ -50,9 +57,9 @@ async function getById(req) {
     },
   });
 
-  // if (!result) {
-  //   throw new ApiErrorHandling(404, 'category not found');
-  // }
+  if (!result) {
+    throw new ApiErrorHandling(404, 'category not found');
+  }
 
   return result;
 }
@@ -60,7 +67,11 @@ async function getById(req) {
 async function getDetail(req) {
   const { slug } = req.params;
 
-  const result = await prisma.category.findUnique(categoryQuery.getDetail(slug));
+  const result = await prisma.category.findUnique({
+    where: {
+      slug,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(404, 'category not found');
@@ -74,7 +85,15 @@ async function update(req) {
   const { name } = req.body;
   const slug = slugify(name, { lower: true });
 
-  const result = await prisma.category.update(categoryQuery.update(id, name, slug));
+  const result = await prisma.category.update({
+    data: {
+      name,
+      slug,
+    },
+    where: {
+      id,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to update category');
@@ -86,7 +105,11 @@ async function update(req) {
 async function destroy(req) {
   const { id } = req.params;
 
-  const result = await prisma.category.delete(categoryQuery.destroy(id));
+  const result = await prisma.category.delete({
+    where: {
+      id,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to delete category');

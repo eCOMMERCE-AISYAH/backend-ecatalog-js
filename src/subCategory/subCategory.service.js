@@ -1,7 +1,6 @@
 import slugify from 'slugify';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
-import subCategoryQuery from '../../helper/query/subCategory.query.js';
 
 async function create(req) {
   const { name, categoryId } = req.body;
@@ -17,7 +16,16 @@ async function create(req) {
     throw new ApiErrorHandling(400, 'sub category is exist');
   }
 
-  const result = await prisma.subCategory.create(subCategoryQuery.create(name, slug, categoryId));
+  const result = await prisma.subCategory.create({
+    data: {
+      name,
+      slug,
+      categoryId,
+    },
+    include: {
+      category: true,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'cannot create sub category');
@@ -29,7 +37,10 @@ async function create(req) {
 async function getAll(req) {
   const { take, skip } = req.query;
 
-  const result = await prisma.subCategory.findMany(subCategoryQuery.getAll(take, skip));
+  const result = await prisma.subCategory.findMany({
+    take: take !== undefined ? Number(take) : undefined,
+    skip: skip !== undefined ? Number(skip) : undefined,
+  });
 
   if (!result) {
     throw new ApiErrorHandling(404, 'sub category not found');
@@ -59,9 +70,19 @@ async function update(req) {
   const { name, categoryId } = req.body;
   const slug = slugify(name, { lower: true });
 
-  const result = await prisma.subCategory.update(
-    subCategoryQuery.update(id, name, categoryId, slug),
-  );
+  const result = await prisma.subCategory.update({
+    data: {
+      name,
+      slug,
+      categoryId,
+    },
+    where: {
+      id,
+    },
+    include: {
+      category: true,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to update sub category');
@@ -73,7 +94,14 @@ async function update(req) {
 async function destroy(req) {
   const { id } = req.params;
 
-  const result = await prisma.subCategory.delete(subCategoryQuery.destroy(id));
+  const result = await prisma.subCategory.delete({
+    where: {
+      id,
+    },
+    include: {
+      category: true,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to delete sub category');
