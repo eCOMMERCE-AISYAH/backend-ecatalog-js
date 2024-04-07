@@ -4,30 +4,36 @@ import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
 async function create(req) {
-  const { path, filename } = req.file;
+  const { files } = req; // Menggunakan "files" karena menerima lebih dari satu file
   const { productId } = req.body;
 
-  const compressedImageBuffer = await sharp(path)
-    .resize({
-      fit: sharp.fit.inside, withoutEnlargement: true,
-    })
-    .toBuffer();
+  const promises = files.map(async (file) => {
+    const { path, filename } = file;
 
-  const compressedImagePath = `public/images/${filename}`;
-  fs.writeFileSync(compressedImagePath, compressedImageBuffer);
+    const compressedImageBuffer = await sharp(path)
+      .resize({
+        fit: sharp.fit.inside, withoutEnlargement: true,
+      })
+      .toBuffer();
 
-  const result = await prisma.productImage.create({
-    data: {
-      image: compressedImagePath,
-      product: {
-        connect: {
-          id: productId,
+    const compressedImagePath = `public/images/${filename}`;
+    fs.writeFileSync(compressedImagePath, compressedImageBuffer);
+
+    const result = await prisma.productImage.create({
+      data: {
+        image: compressedImagePath,
+        product: {
+          connect: {
+            id: productId,
+          },
         },
       },
-    },
+    });
+
+    return result;
   });
 
-  return result;
+  return Promise.all(promises);
 }
 
 async function getByQuery(req) {
