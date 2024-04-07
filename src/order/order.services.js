@@ -101,18 +101,18 @@ async function create(req) {
 }
 
 async function update(id, req) {
-  const { description, status } = req.body;
+  const { status } = req.body;
 
   const result = await prisma.order.update({
     where: {
       id,
     },
     data: {
-      description,
       status,
     },
-  });
 
+  });
+  if (!result) throw new ApiErrorHandling(404, 'order not found');
   return result;
 }
 
