@@ -114,28 +114,26 @@ async function update(req) {
   } = req.body;
   const slug = slugify(name, { lower: true });
 
-  const result = await prisma.product.update(
-    productQuery.update({
-      data: {
-        name,
-        slug,
-        description,
-        stock,
-        subCategoryId,
-        price,
-      },
-      where: {
-        id,
-      },
-      include: {
-        subCategory: {
-          include: {
-            category: true,
-          },
+  const result = await prisma.product.update({
+    data: {
+      name,
+      slug,
+      description,
+      stock,
+      subCategoryId,
+      price,
+    },
+    where: {
+      id,
+    },
+    include: {
+      subCategory: {
+        include: {
+          category: true,
         },
       },
-    }),
-  );
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to update product');
