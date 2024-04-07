@@ -1,3 +1,4 @@
+// eslint-disable-next-line import/extensions
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
@@ -11,7 +12,6 @@ async function getAllByQuery(req) {
       orderId: orderid === undefined ? undefined : orderid,
     },
   });
-
   if (!result) {
     throw new ApiErrorHandling(500, 'internal server error');
   }
@@ -20,36 +20,46 @@ async function getAllByQuery(req) {
 }
 
 async function create(req) {
-  const requestData = req.body.data;
-
-  const createPromises = requestData.map(async (item) => {
-    const {
-      productName, category, subCategory, quantity, productImage, orderId,
-    } = item;
-
-    const data = {
-      productName,
-      category,
-      subCategory,
-      quantity,
-      productImage,
-      order: {
-        connect: {
-          id: orderId,
+  const { orderId, userId } = req;
+  const getCartProduct = await prisma.cartProduct.findMany({
+    where: {
+      userId,
+    },
+    include: {
+      product: {
+        include: {
+          subCategory: true,
+          images: true,
         },
       },
+    },
+  });
+  const createPromises = getCartProduct.map(async (item) => {
+    const {
+      name, subCategory, images,
+    } = item.product;
+
+    const data = {
+      productName: name,
+      subCategory: subCategory.name,
+      productImage: images[0].image,
+      quantity: item.quantity,
+      orderId,
     };
 
-    return prisma.orderHistory.create({
-      data: {
-        ...data,
-      },
-    });
+    return data;
+  });
+  const data = await Promise.all(createPromises);
+
+  await prisma.orderHistory.createMany({
+    data,
   });
 
-  const results = await Promise.all(createPromises);
-  console.log(results);
-  return results;
+  // await prisma.cartProduct.deleteMany({
+  //   where: {
+  //     id: userId,
+  //   },
+  // });
 }
 
 export default {

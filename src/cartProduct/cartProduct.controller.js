@@ -10,10 +10,9 @@ async function getAllCartProduct(req, res) {
       res,
       200,
       'success get all cart product',
-      { cartProduct },
+      cartProduct,
     );
   } catch (e) {
-    console.log(e);
     return responseJson.responseError(
       res,
       e.statusCode || 400,
@@ -30,7 +29,7 @@ async function getCartProductById(req, res) {
       res,
       200,
       'success get cart product',
-      { cartProduct },
+      cartProduct,
     );
   } catch (e) {
     return responseJson.responseError(res, e.statusCode || 400, e.message);
@@ -45,7 +44,7 @@ async function createCartProduct(req, res) {
       res,
       200,
       'success create cart product',
-      { cartProduct },
+      cartProduct,
     );
   } catch (e) {
     console.log(e);
@@ -65,7 +64,7 @@ async function updateCartProductById(req, res) {
       res,
       200,
       'success update cart product',
-      { cartProduct },
+      cartProduct,
     );
   } catch (e) {
     console.log(e);
@@ -85,7 +84,7 @@ async function deleteCartProductById(req, res) {
       res,
       200,
       'success delete cart product',
-      { cartProduct },
+      cartProduct,
     );
   } catch (e) {
     return responseJson.responseError(

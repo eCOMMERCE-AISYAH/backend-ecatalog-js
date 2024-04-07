@@ -9,7 +9,7 @@ async function getAllOrder(req, res) {
       res,
       200,
       'success get all order',
-      { order },
+      order,
     );
   } catch (e) {
     return responseJson.responseError(
@@ -28,7 +28,7 @@ async function getOrderById(req, res) {
       res,
       200,
       'success get order',
-      { order },
+      order,
     );
   } catch (e) {
     return responseJson.responseError(
@@ -45,7 +45,7 @@ async function getOrderById(req, res) {
       res,
       200,
       'success update order',
-      { order },
+      order,
     );
   } catch (e) {
     return responseJson.responseError(
@@ -64,7 +64,7 @@ async function createOrder(req, res) {
       res,
       201,
       'success create order',
-      { order },
+      order,
     );
   } catch (e) {
     return responseJson.responseError(
@@ -83,7 +83,7 @@ async function deleteOrder(req, res) {
       res,
       200,
       `success delete order with id ${req.params.id}`,
-      { order },
+      order,
     );
   } catch (e) {
     return responseJson.responseError(
