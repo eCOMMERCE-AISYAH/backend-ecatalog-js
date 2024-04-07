@@ -2,7 +2,6 @@ import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
-import userQuery from '../../helper/query/user.query.js';
 
 async function register(req) {
   const {
@@ -24,17 +23,21 @@ async function register(req) {
   // Hash Password
   const hashedPassword = guest ? null : await bcrypt.hash(password, 10);
 
-  const result = await prisma.user.create(
-    userQuery.register(
-      name,
-      username,
-      hashedPassword,
+  const userData = {
+    name: name !== null ? name : null,
+    username,
+    ...(guest ? { token, role } : {
+      password: hashedPassword,
       address,
       phoneNumber,
-      role,
-      token,
-    ),
-  );
+      role: guest ? role : 'USER',
+      token: null,
+    }),
+  };
+
+  const result = await prisma.user.create({
+    data: userData,
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to register');
@@ -79,7 +82,13 @@ async function login(req) {
 async function getAll(req) {
   const { take, skip, username } = req.query;
 
-  const result = await prisma.user.findMany(userQuery.getAll(take, skip, username));
+  const result = await prisma.user.findMany({
+    take: take !== undefined ? Number(take) : undefined,
+    skip: skip !== undefined ? Number(skip) : undefined,
+    where: {
+      username: (username !== undefined && username.includes('guest')) ? { startsWith: username } : undefined,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(404, 'user not found');
@@ -91,7 +100,11 @@ async function getAll(req) {
 async function getById(req) {
   const { id } = req.params;
 
-  const result = await prisma.user.findUnique(userQuery.getById(id));
+  const result = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(404, 'user not found');
@@ -126,34 +139,68 @@ async function update(req) {
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-    return userQuery.update(id, {
-      name, password: hashedNewPassword, address, phoneNumber,
+    return prisma.user.update({
+      where: { id },
+      data: {
+        name,
+        password: hashedNewPassword,
+        address,
+        phoneNumber,
+      },
     });
   }
 
   // Update name, address, and phone
   if (name && address && phoneNumber) {
-    return userQuery.update(id, { name, address, phoneNumber });
+    return prisma.user.update({
+      where: { id },
+      data: {
+        name,
+        address,
+        phoneNumber,
+      },
+    });
   }
 
   // Update name and address
   if (name && address) {
-    return userQuery.update(id, { name, address });
+    return prisma.user.update({
+      where: { id },
+      data: {
+        name,
+        address,
+      },
+    });
   }
 
   // Update only name
   if (name) {
-    return userQuery.update(id, { name });
+    return prisma.user.update({
+      where: { id },
+      data: {
+        name,
+      },
+    });
   }
 
   // Update only address
   if (address) {
-    return userQuery.update(id, { address });
+    return prisma.user.update({
+      where: { id },
+      data: {
+        address,
+      },
+    });
   }
 
   // Update only phoneNumber
   if (phoneNumber) {
-    return userQuery.update(id, { phoneNumber });
+    return prisma.user.update({
+      where: { id },
+      data: {
+        phoneNumber,
+      },
+    });
   }
 
   // Update only password
@@ -165,7 +212,12 @@ async function update(req) {
     }
 
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
-    return userQuery.update(id, { password: hashedNewPassword });
+    return prisma.user.update({
+      where: { id },
+      data: {
+        password: hashedNewPassword,
+      },
+    });
   }
 
   throw new ApiErrorHandling(400, 'Invalid update request');
@@ -173,7 +225,6 @@ async function update(req) {
 
 async function logout(req) {
   const { id } = req.body;
-  console.log(id);
 
   const result = await prisma.user.update({
     data: {
@@ -194,7 +245,11 @@ async function logout(req) {
 async function destroy(req) {
   const { id } = req.params;
 
-  const result = await prisma.user.delete(userQuery.destroy(id));
+  const result = await prisma.user.delete({
+    where: {
+      id,
+    },
+  });
 
   if (!result) {
     throw new ApiErrorHandling(400, 'failed to delete user');
