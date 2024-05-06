@@ -55,6 +55,28 @@ async function create(req) {
     },
   };
 
+  const existingProduct = await prisma.cartProduct.findFirst({
+    where: {
+      userId,
+      productId,
+    },
+  });
+  console.log(existingProduct);
+
+  if (existingProduct) {
+    console.log(existingProduct.quantity);
+    const updated = await prisma.cartProduct.update({
+      where: {
+        id: existingProduct.id,
+      },
+      data: {
+        quantity: Number(existingProduct.quantity) + Number(quantity),
+      },
+    });
+
+    return updated;
+  }
+
   const result = await prisma.cartProduct.create({
     data: {
       ...data,
