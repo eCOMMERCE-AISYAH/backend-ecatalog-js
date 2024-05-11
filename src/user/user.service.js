@@ -73,9 +73,6 @@ async function login(req) {
     where: {
       username,
     },
-    select: {
-      token: true,
-    },
   });
 }
 
