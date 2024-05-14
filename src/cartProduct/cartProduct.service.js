@@ -94,7 +94,7 @@ async function create(req) {
 
 async function update(id, req) {
   const {
-    quantity,
+    quantity, notes,
   } = req.body;
 
   const result = await prisma.cartProduct.update({
@@ -103,6 +103,7 @@ async function update(id, req) {
     },
     data: {
       quantity,
+      notes,
     },
   });
 
