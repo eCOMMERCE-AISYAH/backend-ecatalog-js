@@ -3,10 +3,8 @@ import * as fs from 'fs';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
-async function create(req) {
+async function create(req, productId) {
   const { files } = req; // Menggunakan "files" karena menerima lebih dari satu file
-  const { productId } = req.body;
-
   const promises = files.map(async (file) => {
     const { path, filename } = file;
 
