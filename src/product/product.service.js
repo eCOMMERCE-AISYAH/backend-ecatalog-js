@@ -1,6 +1,7 @@
 import slugify from 'slugify';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
+import productImageService from '../productImage/productImage.service.js';
 
 async function create(req) {
   const {
@@ -11,7 +12,6 @@ async function create(req) {
     price,
   } = req.body;
   const slug = slugify(name, { lower: true });
-
   const isExist = await prisma.product.count({
     where: {
       name,
@@ -27,9 +27,9 @@ async function create(req) {
       name,
       slug,
       description,
-      stock,
+      stock: Number(stock),
       subCategoryId,
-      price,
+      price: Number(price),
     },
     include: {
       subCategory: {
@@ -39,11 +39,12 @@ async function create(req) {
       },
     },
   });
-
   if (!result) {
     throw new ApiErrorHandling(400, 'cannot create product');
   }
 
+  // create product image
+  productImageService.create(req, result.id);
   return result;
 }
 
