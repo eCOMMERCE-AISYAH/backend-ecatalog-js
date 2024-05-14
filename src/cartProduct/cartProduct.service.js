@@ -19,7 +19,7 @@ async function getAllByQuery(req) {
 }
 
 async function get(id) {
-  const result = await prisma.cartProduct.findUnique({
+  const result = await prisma.cartProduct.findFirst({
     where: {
       id,
     },
@@ -61,10 +61,8 @@ async function create(req) {
       productId,
     },
   });
-  console.log(existingProduct);
 
   if (existingProduct) {
-    console.log(existingProduct.quantity);
     const updated = await prisma.cartProduct.update({
       where: {
         id: existingProduct.id,
