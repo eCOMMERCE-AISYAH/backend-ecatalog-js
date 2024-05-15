@@ -97,8 +97,8 @@ async function create(req) {
     userId: result.user.id,
   });
 
-  if (!createOrderHistory) {
-    throw new ApiErrorHandling(500, 'gagal create order history');
+  if (!createOrderHistory.status) {
+    throw new ApiErrorHandling(500, `${createOrderHistory.message}`);
   }
 
   return result;
