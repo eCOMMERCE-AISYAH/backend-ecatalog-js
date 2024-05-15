@@ -111,13 +111,15 @@ model Order {
 // }
 
 model OrderHistory {
-	id           String @id @default(uuid()) @db.VarChar(100)
-	productName  String @db.VarChar(100)
-	subCategory  String @db.VarChar(50)
-	quantity     Int    @db.SmallInt
-	productImage String @db.VarChar(100)
-	orderId      String @db.VarChar(100)
-	order        Order  @relation(fields: [orderId], references: [id])
+	id           String  @id @default(uuid()) @db.VarChar(100)
+	productName  String  @db.VarChar(100)
+	subCategory  String  @db.VarChar(50)
+	quantity     Int     @db.SmallInt
+	price        Int
+	totalPrice   Int
+	productImage String? @db.VarChar(100)
+	orderId      String  @db.VarChar(100)
+	order        Order   @relation(fields: [orderId], references: [id])
 }
 
 enum Status {
