@@ -92,10 +92,14 @@ async function create(req) {
   }
 
   // CREATE ORDER HISTORY
-  orderHistoryService.create({
+  const createOrderHistory = await orderHistoryService.create({
     orderId: result.id,
     userId: result.user.id,
   });
+
+  if (!createOrderHistory) {
+    throw new ApiErrorHandling(500, 'gagal create order history');
+  }
 
   return result;
 }
