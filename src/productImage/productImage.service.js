@@ -5,6 +5,8 @@ import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
 async function create(req, productId) {
   const { files } = req; // Menggunakan "files" karena menerima lebih dari satu file
+  if (files.length === 0) return false;
+
   const promises = files.map(async (file) => {
     const { path, filename } = file;
 

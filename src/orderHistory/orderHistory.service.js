@@ -21,6 +21,7 @@ async function getAllByQuery(req) {
 
 async function create(req) {
   const { orderId, userId } = req;
+
   const getCartProduct = await prisma.cartProduct.findMany({
     where: {
       userId,
@@ -35,7 +36,7 @@ async function create(req) {
     },
   });
 
-  if (!getCartProduct) return false;
+  if (!getCartProduct || getCartProduct.length < 1) return { status: false, message: 'cart tidak boleh kosong' };
 
   const createPromises = getCartProduct.map(async (item) => {
     const {
@@ -56,17 +57,19 @@ async function create(req) {
   });
   const data = await Promise.all(createPromises);
 
-  await prisma.orderHistory.createMany({
+  const createOrderHistory = await prisma.orderHistory.createMany({
     data,
   });
 
-  return true;
+  if (!createOrderHistory) return { status: false, message: 'gagal create history order' };
 
-  // await prisma.cartProduct.deleteMany({
-  //   where: {
-  //     id: userId,
-  //   },
-  // });
+  await prisma.cartProduct.deleteMany({
+    where: {
+      userId,
+    },
+  });
+
+  return true;
 }
 
 export default {
