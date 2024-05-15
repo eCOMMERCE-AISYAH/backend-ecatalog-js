@@ -44,7 +44,10 @@ async function create(req) {
   }
 
   // create product image
-  productImageService.create(req, result.id);
+  const createImage = await productImageService.create(req, result.id);
+  if (!createImage) {
+    throw new ApiErrorHandling(400, 'gambar tidak boleh kosong');
+  }
   return result;
 }
 
