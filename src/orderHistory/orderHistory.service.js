@@ -28,15 +28,18 @@ async function create(req) {
     include: {
       product: {
         include: {
-          subCategory: true,
           images: true,
+          subCategory: true,
         },
       },
     },
   });
+
+  if (!getCartProduct) return false;
+
   const createPromises = getCartProduct.map(async (item) => {
     const {
-      name, subCategory, images,
+      name, subCategory, images, price,
     } = item.product;
 
     const data = {
@@ -45,6 +48,8 @@ async function create(req) {
       productImage: images[0].image,
       quantity: item.quantity,
       orderId,
+      price,
+      totalPrice: (price * item.quantity),
     };
 
     return data;
@@ -54,6 +59,8 @@ async function create(req) {
   await prisma.orderHistory.createMany({
     data,
   });
+
+  return true;
 
   // await prisma.cartProduct.deleteMany({
   //   where: {
