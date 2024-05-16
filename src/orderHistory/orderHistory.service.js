@@ -36,7 +36,7 @@ async function create(req) {
     },
   });
 
-  if (!getCartProduct || getCartProduct.length < 1) return { status: false, message: 'cart tidak boleh kosong' };
+  if (!getCartProduct || getCartProduct.length < 1) throw new ApiErrorHandling(500, 'cart tidak boleh kosong');
 
   const createPromises = getCartProduct.map(async (item) => {
     const {
@@ -61,7 +61,7 @@ async function create(req) {
     data,
   });
 
-  if (!createOrderHistory) return { status: false, message: 'gagal create history order' };
+  if (!createOrderHistory) throw new ApiErrorHandling(500, 'gagal create order history');
 
   await prisma.cartProduct.deleteMany({
     where: {
