@@ -11,7 +11,11 @@ async function getAllByQuery(req) {
       userId: userid !== undefined ? userid : undefined,
     },
     include: {
-      product: true,
+      product: {
+        include: {
+          images: true,
+        },
+      },
     },
   });
 
