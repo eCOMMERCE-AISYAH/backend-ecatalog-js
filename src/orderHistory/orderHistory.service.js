@@ -68,8 +68,6 @@ async function create(req) {
       userId,
     },
   });
-
-  return true;
 }
 
 export default {
