@@ -5,7 +5,7 @@ import subCategoryRoute from '../subCategory/subCategory.route.js';
 import orderRoute from '../order/order.route.js';
 import productRoute from '../product/product.route.js';
 import userRoute from '../user/user.route.js';
-import productImageRoute from '../productImage/productImage.route.js';
+// import productImageRoute from '../productImage/productImage.route.js';
 import orderHistoryRoute from '../orderHistory/orderHistory.route.js';
 
 const router = express.Router();
@@ -29,7 +29,7 @@ router.use(subCategoryRoute);
 router.use(productRoute);
 
 // IMAGES
-router.use(productImageRoute);
+// router.use(productImageRoute);
 
 // USER
 router.use(userRoute);
