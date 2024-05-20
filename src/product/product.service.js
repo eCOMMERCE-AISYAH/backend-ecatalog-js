@@ -44,7 +44,6 @@ async function create(req) {
   }
 
   // create product image
-
   if (!Array.isArray(req.files)) {
     throw new ApiErrorHandling(400, 'Images must be an array');
   }
@@ -155,6 +154,9 @@ async function update(req) {
 
 async function destroy(req) {
   const { id } = req.params;
+
+  // delete image from server
+  await productImageService.destroy(id);
 
   const result = await prisma.product.delete({
     where: {
