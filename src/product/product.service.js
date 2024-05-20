@@ -59,6 +59,11 @@ async function getAllByQuery(req) {
   } = req.query;
 
   const result = await prisma.product.findMany({
+    orderBy: [
+      {
+        createdAt: 'desc',
+      },
+    ],
     take: take !== undefined ? Number(take) : undefined,
     skip: skip !== undefined ? Number(skip) : undefined,
     where: {
