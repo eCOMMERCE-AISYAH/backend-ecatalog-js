@@ -9,6 +9,11 @@ async function getAllByQuery(req) {
   } = req.query;
 
   const result = await prisma.order.findMany({
+    orderBy: [
+      {
+        createdAt: 'desc',
+      },
+    ],
     take: take === undefined ? undefined : Number(take),
     skip: skip === undefined ? undefined : Number(skip),
     where: {
