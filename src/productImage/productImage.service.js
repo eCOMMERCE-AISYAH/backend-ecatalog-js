@@ -1,39 +1,44 @@
 import sharp from 'sharp';
-import * as fs from 'fs';
+import * as fs from 'fs/promises';
+import fsCreate from 'fs';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 
 async function create(req, productId) {
-  const { files } = req; // Menggunakan "files" karena menerima lebih dari satu file
-  if (files.length === 0) throw new ApiErrorHandling(400, 'gambar wajib diisi');
+  try {
+    const { files } = req; // Menggunakan "files" karena menerima lebih dari satu file
+    if (files.length === 0) throw new ApiErrorHandling(400, 'gambar wajib diisi');
 
-  const promises = files.map(async (file) => {
-    const { path, filename } = file;
+    const promises = files.map(async (file) => {
+      const { path, filename } = file;
 
-    const compressedImageBuffer = await sharp(path)
-      .resize({
-        fit: sharp.fit.inside, withoutEnlargement: true,
-      })
-      .toBuffer();
+      const compressedImageBuffer = await sharp(path)
+        .resize({
+          fit: sharp.fit.inside, withoutEnlargement: true,
+        })
+        .toBuffer();
 
-    const compressedImagePath = `public/images/${filename}`;
-    fs.writeFileSync(compressedImagePath, compressedImageBuffer);
+      const compressedImagePath = `public/images/${filename}`;
+      fsCreate.writeFileSync(compressedImagePath, compressedImageBuffer);
 
-    const result = await prisma.productImage.create({
-      data: {
-        image: compressedImagePath,
-        product: {
-          connect: {
-            id: productId,
+      const result = await prisma.productImage.create({
+        data: {
+          image: compressedImagePath,
+          product: {
+            connect: {
+              id: productId,
+            },
           },
         },
-      },
+      });
+
+      return result;
     });
 
-    return result;
-  });
-
-  return Promise.all(promises);
+    return Promise.all(promises);
+  } catch (e) {
+    throw new ApiErrorHandling(500, e.message);
+  }
 }
 
 async function getByQuery(req) {
@@ -64,24 +69,39 @@ async function getById(req) {
   return result;
 }
 
-async function destroy(req) {
-  const { id } = req.params;
+async function destroy(productId) {
+  try {
+    const images = await prisma.productImage.findMany({
+      where: {
+        productId,
+      },
+    });
 
-  const image = await getById(req);
-  if (!image) {
-    throw new ApiErrorHandling(404, 'image not found for delete');
+    if (images.length === 0) {
+      throw new ApiErrorHandling(404, 'Gambar tidak ditemukan untuk produk tersebut');
+    }
+
+    // Menghapus file gambar secara asinkron
+    const deleteFilesPromises = images.map(async (image) => {
+      const pathImage = image.image;
+      await fs.unlink(pathImage);
+    });
+
+    // Menunggu semua operasi penghapusan file selesai
+    await Promise.all(deleteFilesPromises);
+
+    // Menghapus entri database untuk semua gambar dengan productId tersebut
+    const result = await prisma.productImage.deleteMany({
+      where: {
+        productId,
+      },
+    });
+
+    return result;
+  } catch (error) {
+    console.log(error);
+    throw new ApiErrorHandling(500, 'Terjadi kesalahan saat menghapus gambar');
   }
-
-  const pathImage = image.image;
-  fs.unlinkSync(pathImage);
-
-  const result = await prisma.productImage.delete({
-    where: {
-      id,
-    },
-  });
-
-  return result;
 }
 
 export default {
