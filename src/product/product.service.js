@@ -47,7 +47,10 @@ async function create(req) {
   if (!Array.isArray(req.files)) {
     throw new ApiErrorHandling(400, 'Images must be an array');
   }
-  await productImageService.create(req, result.id);
+  const createImage = await productImageService.create(req, result.id);
+  if (!createImage) {
+    throw new ApiErrorHandling(400, 'cannot create product image');
+  }
 
   return result;
 }
