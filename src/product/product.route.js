@@ -5,7 +5,7 @@ import imageMulter from '../middleware/productImage.js';
 
 const router = express.Router();
 
-router.post('/api/products', multer({ storage: imageMulter.fileStorageProduct }).array('image', 5), productController.createProduct);
+router.post('/api/products', multer({ storage: imageMulter.fileStorageProduct }).array('images', 5), productController.createProduct);
 router.get('/api/products', productController.getAllProductsByQuery);
 router.get('/api/products/:id', productController.getProductDetail);
 router.patch('/api/products/:id', productController.updateProduct);
