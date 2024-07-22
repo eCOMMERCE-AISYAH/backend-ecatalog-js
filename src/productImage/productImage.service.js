@@ -8,7 +8,6 @@ async function create(req, productId) {
   try {
     const { files } = req; // Menggunakan "files" karena menerima lebih dari satu file
     if (files.length === 0) throw new ApiErrorHandling(400, 'gambar wajib diisi');
-
     const promises = files.map(async (file) => {
       const { path, filename } = file;
 
@@ -69,6 +68,23 @@ async function getById(req) {
   return result;
 }
 
+// async function update(req) {
+//   const { image, productId, path } = req.files;
+//   const compressedImageBuffer = await sharp(path)
+//     .resize({
+//       fit: sharp.fit.inside, withoutEnlargement: true,
+//     })
+//     .toBuffer();
+//
+//   const compressedImagePath = `public/images/${filename}`;
+//   fsCreate.writeFileSync(compressedImagePath, compressedImageBuffer);
+//   const result = await prisma.productImage.create({
+//     data: {
+//       image,
+//       productId,
+//     },
+//   });
+// }
 async function destroy(productId) {
   try {
     const images = await prisma.productImage.findMany({
@@ -77,27 +93,23 @@ async function destroy(productId) {
       },
     });
 
-    if (images.length === 0) {
-      throw new ApiErrorHandling(404, 'Gambar tidak ditemukan untuk produk tersebut');
+    if (images) {
+      // Menghapus file gambar secara asinkron
+      const deleteFilesPromises = images.map(async (image) => {
+        const pathImage = image.image;
+        await fs.unlink(pathImage);
+      });
+
+      // Menunggu semua operasi penghapusan file selesai
+      await Promise.all(deleteFilesPromises);
+      // Menghapus entri database untuk semua gambar dengan productId tersebut
+      await prisma.productImage.deleteMany({
+        where: {
+          productId,
+        },
+      });
     }
-
-    // Menghapus file gambar secara asinkron
-    const deleteFilesPromises = images.map(async (image) => {
-      const pathImage = image.image;
-      await fs.unlink(pathImage);
-    });
-
-    // Menunggu semua operasi penghapusan file selesai
-    await Promise.all(deleteFilesPromises);
-
-    // Menghapus entri database untuk semua gambar dengan productId tersebut
-    const result = await prisma.productImage.deleteMany({
-      where: {
-        productId,
-      },
-    });
-
-    return result;
+    return true;
   } catch (error) {
     console.log(error);
     throw new ApiErrorHandling(500, 'Terjadi kesalahan saat menghapus gambar');

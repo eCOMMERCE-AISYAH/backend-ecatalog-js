@@ -10,6 +10,8 @@ async function create(req) {
     stock,
     subCategoryId,
     price,
+    salePrice,
+    purchasePrice,
   } = req.body;
   const slug = slugify(name, { lower: true });
   const isExist = await prisma.product.count({
@@ -27,6 +29,8 @@ async function create(req) {
       name,
       slug,
       description,
+      salePrice: Number(salePrice),
+      purchasePrice: Number(purchasePrice),
       stock: Number(stock),
       subCategoryId,
       price: Number(price),
@@ -124,17 +128,22 @@ async function update(req) {
     stock,
     subCategoryId,
     price,
+    salePrice,
+    purchasePrice,
   } = req.body;
+  console.log(name);
   const slug = slugify(name, { lower: true });
 
   const result = await prisma.product.update({
     data: {
       name,
+      salePrice: Number(salePrice),
+      purchasePrice: Number(purchasePrice),
       slug,
       description,
       stock,
       subCategoryId,
-      price,
+      price: Number(price),
     },
     where: {
       id,

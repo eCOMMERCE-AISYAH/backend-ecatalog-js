@@ -35,6 +35,8 @@ model Product {
 	price         Int
 	subCategoryId String?        @db.VarChar(100)
 	subCategory   SubCategory?   @relation(fields: [subCategoryId], references: [id])
+	salePrice     Int?
+	purchasePrice Int?
 	createdAt     DateTime       @default(now())
 	updatedAt     DateTime       @updatedAt
 	images        ProductImage[]
