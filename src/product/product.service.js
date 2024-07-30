@@ -10,7 +10,6 @@ async function create(req) {
     stock,
     subCategoryId,
     price,
-    salePrice,
     purchasePrice,
   } = req.body;
   const slug = slugify(name, { lower: true });
@@ -29,7 +28,6 @@ async function create(req) {
       name,
       slug,
       description,
-      salePrice: Number(salePrice),
       purchasePrice: Number(purchasePrice),
       stock: Number(stock),
       subCategoryId,
@@ -128,7 +126,6 @@ async function update(req) {
     stock,
     subCategoryId,
     price,
-    salePrice,
     purchasePrice,
   } = req.body;
   console.log(name);
