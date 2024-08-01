@@ -3,6 +3,15 @@ import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 import productImageService from '../productImage/productImage.service.js';
 
+async function countProduct() {
+  const result = await prisma.product.count();
+
+  if (!result) {
+    throw new ApiErrorHandling(500, 'internal server error');
+  }
+  return result;
+}
+
 async function create(req) {
   const {
     name,
@@ -193,4 +202,5 @@ export default {
   getDetail,
   update,
   destroy,
+  countProduct,
 };
