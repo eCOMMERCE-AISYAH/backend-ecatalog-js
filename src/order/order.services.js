@@ -3,6 +3,35 @@ import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 import orderHistoryService from '../orderHistory/orderHistory.service.js';
 
+// DASHBOARD
+
+async function count() {
+  const result = await prisma.order.count();
+
+  if (!result) {
+    throw new ApiErrorHandling(500, 'internal server error');
+  }
+
+  return result;
+}
+
+async function omzetByOrderStatus() {
+  const result = await prisma.order.aggregate({
+    _sum: {
+      totalPrice: true,
+    },
+    where: {
+      status: 'SUKSES',
+    },
+  });
+  if (!result) {
+    throw new ApiErrorHandling(500, 'internal server error');
+  }
+
+  return result._sum.totalPrice;
+}
+// ======================
+
 async function getAllByQuery(req) {
   const {
     take, skip, name, phonenumber, userid, status,
@@ -118,6 +147,7 @@ async function update(id, req) {
 
   });
   if (!result) throw new ApiErrorHandling(404, 'order not found');
+
   return result;
 }
 
@@ -142,4 +172,6 @@ export default {
   create,
   destroy,
   update,
+  count,
+  omzetByOrderStatus,
 };

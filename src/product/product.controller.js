@@ -1,6 +1,24 @@
 import productService from './product.service.js';
 import ResponseJson from '../../helper/responseJson.js';
 
+async function countProducts(req, res) {
+  try {
+    const product = await productService.countProduct();
+    return ResponseJson.responseSuccess(
+      res,
+      201,
+      'success count product',
+      product,
+    );
+  } catch (err) {
+    return ResponseJson.responseError(
+      res,
+      err.statusCode || 400,
+      err.message,
+    );
+  }
+}
+
 async function createProduct(req, res) {
   try {
     const product = await productService.create(req);
@@ -102,4 +120,5 @@ export default {
   getProductDetail,
   updateProduct,
   deleteProduct,
+  countProducts,
 };
