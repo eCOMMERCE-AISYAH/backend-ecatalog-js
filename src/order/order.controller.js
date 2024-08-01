@@ -1,6 +1,44 @@
 import orderServices from './order.services.js';
 import responseJson from '../../helper/responseJson.js';
 
+async function getOmzetByOrderStatus(req, res) {
+  try {
+    const order = await orderServices.omzetByOrderStatus();
+
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success omzet by order',
+      order,
+    );
+  } catch (e) {
+    return responseJson.responseError(
+      res,
+      e.statusCode || 404,
+      e.message,
+    );
+  }
+}
+
+async function countOrders(req, res) {
+  try {
+    const order = await orderServices.count();
+
+    return responseJson.responseSuccess(
+      res,
+      200,
+      'success get count order',
+      order,
+    );
+  } catch (e) {
+    return responseJson.responseError(
+      res,
+      e.statusCode || 404,
+      e.message,
+    );
+  }
+}
+
 async function getAllOrder(req, res) {
   try {
     const order = await orderServices.getAllByQuery(req);
@@ -100,4 +138,6 @@ export default {
   createOrder,
   deleteOrder,
   updateOrderById,
+  countOrders,
+  getOmzetByOrderStatus,
 };
