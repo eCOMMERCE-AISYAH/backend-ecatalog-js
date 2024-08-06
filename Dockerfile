@@ -1,20 +1,17 @@
-# Menggunakan image Node.js LTS sebagai base image
+# Menggunakan image Node.js versi 20 LTS
 FROM node:20
 
-# Menentukan direktori kerja di dalam container
+# Menetapkan direktori kerja
 WORKDIR /app
 
-# Menyalin package.json dan package-lock.json ke direktori kerja
+# Menyalin file package.json dan package-lock.json
 COPY package*.json ./
 
-# Menginstal dependencies
-RUN npm install -g pm2 && npm install
+# Menginstal dependensi
+RUN npm install
 
-# Menyalin seluruh kode sumber ke direktori kerja
+# Menyalin sisa file proyek
 COPY . .
 
-# Mengekspos port yang akan digunakan oleh aplikasi
-EXPOSE 3000
-
-# Menjalankan perintah untuk memulai aplikasi menggunakan PM2
-CMD ["pm2-runtime", "start", "src/app.js", "--name", "backend-ecatalog-js"]
+# Menjalankan migrasi dan aplikasi
+CMD ["sh", "-c", "npx prisma migrate deploy && npm start"]

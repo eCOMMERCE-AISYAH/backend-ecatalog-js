@@ -1,30 +1,30 @@
 version: '3.8'
 
 services:
-  app:
-    build: .
-    working_dir: /app
-    volumes:
-      - .:/app
-      - /app/node_modules
-    ports:
-      - "${APP_PORT}:3000"
-    env_file:
-      - .env
-    depends_on:
-      - mysql
-
   mysql:
     image: mysql:8.0
-    volumes:
-      - mysql-data:/var/lib/mysql
+    container_name: mysql_container
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: ecommerce_aisyiya
       MYSQL_USER: kunam
       MYSQL_PASSWORD: manuk
     ports:
       - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  app:
+    build: .
+    container_name: node_app
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+    environment:
+      DATABASE_URL: mysql://kunam:manuk@mysql:3306/ecommerce_aisyiya
+      APP_HOST: localhost
+      APP_PORT: 3000
 
 volumes:
-  mysql-data:
+  mysql_data:
