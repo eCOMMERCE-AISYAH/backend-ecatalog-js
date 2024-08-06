@@ -40,10 +40,11 @@ async function create(req) {
 
   const createPromises = getCartProduct.map(async (item) => {
     const {
-      name, subCategory, images, price,
+      name, subCategory, images, price, productId,
     } = item.product;
-
+    console.log(productId);
     const data = {
+      productId,
       productName: name,
       subCategory: subCategory.name,
       productImage: images[0].image,
@@ -70,7 +71,22 @@ async function create(req) {
   });
 }
 
+async function destroy(id) {
+  const result = await prisma.orderHistory.deleteMany({
+    where: {
+      orderId: id,
+    },
+  });
+
+  if (!result) {
+    return false;
+  }
+
+  return true;
+}
+
 export default {
   getAllByQuery,
   create,
+  destroy,
 };

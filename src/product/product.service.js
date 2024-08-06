@@ -3,6 +3,7 @@ import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 import productImageService from '../productImage/productImage.service.js';
 
+// DASHBOARD
 async function countProduct() {
   const result = await prisma.product.count();
 
@@ -12,6 +13,28 @@ async function countProduct() {
   return result;
 }
 
+async function getProductBySold() {
+  const result = await prisma.product.findMany({
+    orderBy: [
+      {
+        totalSold: 'desc',
+      },
+    ],
+    include: {
+      subCategory: {
+        include: {
+          category: true,
+        },
+      },
+    },
+    take: 3,
+  });
+  if (!result) {
+    throw new ApiErrorHandling(500, 'internal server error');
+  }
+  return result;
+}
+// =====================
 async function create(req) {
   const {
     name,
@@ -203,4 +226,5 @@ export default {
   update,
   destroy,
   countProduct,
+  getProductBySold,
 };

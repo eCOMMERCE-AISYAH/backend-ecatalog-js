@@ -2,6 +2,8 @@ import cryptoRandomString from 'crypto-random-string';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 import orderHistoryService from '../orderHistory/orderHistory.service.js';
+import productUtil from '../product/product.util.js';
+import orderHistoryUtil from '../orderHistory/orderHistory.util.js';
 
 // DASHBOARD
 
@@ -126,7 +128,7 @@ async function create(req) {
   }
 
   // CREATE ORDER HISTORY
-  await orderHistoryService.create({
+  await orderHistoryUtil.create({
     orderId: result.id,
     userId: result.user.id,
   });
@@ -136,17 +138,46 @@ async function create(req) {
 
 async function update(id, req) {
   const { status } = req.body;
+  let result;
+  if (status === 'BATAL') {
+    result = await prisma.order.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+    });
 
-  const result = await prisma.order.update({
-    where: {
-      id,
-    },
-    data: {
-      status,
-    },
+    if (!result) throw new ApiErrorHandling(500, 'internal server error');
 
-  });
-  if (!result) throw new ApiErrorHandling(404, 'order not found');
+    const removeOrderHistory = await orderHistoryUtil.destroyMany(id);
+
+    if (!removeOrderHistory) {
+      throw new ApiErrorHandling(500, 'internal server error');
+    }
+  } else if (status === 'SUKSES') {
+    result = await prisma.order.update({
+      where: {
+        id,
+      },
+      data: {
+        status,
+      },
+    });
+    console.log('update success');
+
+    if (!result) throw new ApiErrorHandling(500, 'internal server error');
+
+    const reduceProduct = await orderHistoryUtil.reduceStockByOrderHistory(id);
+    console.log(reduceProduct);
+    if (!reduceProduct) {
+      throw new ApiErrorHandling(500, 'internal server error');
+    }
+    console.log('success order update status');
+  } else {
+    throw new ApiErrorHandling(400, 'invalid status');
+  }
 
   return result;
 }

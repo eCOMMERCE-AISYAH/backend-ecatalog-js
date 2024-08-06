@@ -1,6 +1,24 @@
 import productService from './product.service.js';
 import ResponseJson from '../../helper/responseJson.js';
 
+async function getProductsBySoldOut(req, res) {
+  try {
+    const product = await productService.getProductBySold();
+    return ResponseJson.responseSuccess(
+      res,
+      200,
+      'success get products',
+      product,
+    );
+  } catch (err) {
+    return ResponseJson.responseError(
+      res,
+      err.statusCode || 400,
+      err.message,
+    );
+  }
+}
+
 async function countProducts(req, res) {
   try {
     const product = await productService.countProduct();
@@ -121,4 +139,5 @@ export default {
   updateProduct,
   deleteProduct,
   countProducts,
+  getProductsBySoldOut,
 };
