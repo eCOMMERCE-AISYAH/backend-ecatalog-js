@@ -2,6 +2,7 @@ import bcrypt from 'bcrypt';
 import { v4 as uuid } from 'uuid';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
+import tokenUtil from '../utils/token.util.js';
 
 async function register(req) {
   const {
@@ -46,34 +47,98 @@ async function register(req) {
   return result;
 }
 
+// async function login(req) {
+//   const { username, password } = req.body;
+//   const token = uuid().toString();
+//
+//   const user = await prisma.user.findUnique({
+//     where: {
+//       username,
+//     },
+//   });
+//
+//   if (!user) {
+//     throw new ApiErrorHandling(401, 'Username or password is invalid');
+//   }
+//
+//   const validPassword = await bcrypt.compare(password, user.password);
+//
+//   if (!validPassword) {
+//     throw new ApiErrorHandling(401, 'Username or password is invalid');
+//   }
+//
+//   const newToken = tokenUtil.generateAccessToken(user);
+//   const refreshToken = tokenUtil.generateRefreshToken(user);
+//
+//   await prisma.refreshToken.create({
+//     data: {
+//       token: refreshToken,
+//       user: {
+//         connect: {
+//           id: user.id,
+//         },
+//       },
+//       expiredAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+//     },
+//   });
+//
+//   if (!token) {
+//     throw new ApiErrorHandling(500, 'internal server error');
+//   }
+//
+//   return {
+//     token: {
+//       newToken,
+//       refreshToken,
+//     },
+//     prisma.user.update({
+//       data: {
+//         token,
+//       },
+//       where: {
+//         username,
+//       },
+//     });
+//   }
+// }
+
 async function login(req) {
   const { username, password } = req.body;
-  const token = uuid().toString();
 
+  // Cari pengguna berdasarkan username
   const user = await prisma.user.findUnique({
     where: {
       username,
     },
   });
 
-  if (!user) {
+  // Periksa apakah pengguna ditemukan dan password valid
+  if (!user || !(await bcrypt.compare(password, user.password))) {
     throw new ApiErrorHandling(401, 'Username or password is invalid');
   }
 
-  const validPassword = await bcrypt.compare(password, user.password);
+  // Buat token baru
+  const newToken = tokenUtil.generateAccessToken(user);
+  const refreshToken = tokenUtil.generateRefreshToken(user);
 
-  if (!validPassword) {
-    throw new ApiErrorHandling(401, 'Username or password is invalid');
-  }
-
-  return prisma.user.update({
+  // Simpan refresh token ke database
+  await prisma.refreshToken.create({
     data: {
-      token,
-    },
-    where: {
-      username,
+      token: refreshToken,
+      user: {
+        connect: {
+          id: user.id,
+        },
+      },
+      expiredAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiredAt ke 7 hari ke depan
     },
   });
+
+  // Kembalikan token baru dan refresh token
+  return {
+    token: newToken,
+    refreshToken,
+  };
 }
 
 async function getAll(req) {
