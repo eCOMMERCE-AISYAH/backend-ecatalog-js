@@ -7,8 +7,15 @@ import productRoute from '../product/product.route.js';
 import userRoute from '../user/user.route.js';
 // import productImageRoute from '../productImage/productImage.route.js';
 import orderHistoryRoute from '../orderHistory/orderHistory.route.js';
+import authentication from '../middleware/auth.js';
 
 const router = express.Router();
+
+// USER
+router.use(userRoute);
+
+// MIDDLEWARE
+// router.use(authentication);
 
 // ORDER
 router.use(orderRoute);
@@ -30,9 +37,6 @@ router.use(productRoute);
 
 // IMAGES
 // router.use(productImageRoute);
-
-// USER
-router.use(userRoute);
 
 router.get('/hello', (req, res) => {
   res.status(200).json({

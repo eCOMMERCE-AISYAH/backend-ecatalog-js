@@ -1,5 +1,6 @@
 import express from 'express';
 import subCategoryController from './subCategory.controller.js';
+import authentication from '../middleware/auth.js';
 
 const router = express.Router();
 
