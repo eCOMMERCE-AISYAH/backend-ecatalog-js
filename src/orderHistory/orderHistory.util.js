@@ -38,9 +38,6 @@ async function create(req) {
       totalPrice: (price * item.quantity),
     };
 
-    const addTotalSold = await productUtil.addTotalSold(id, item.quantity);
-    if (!addTotalSold) throw new ApiErrorHandling(500, 'gagal menambahkan total sold');
-
     return data;
   });
   const data = await Promise.all(createPromises);

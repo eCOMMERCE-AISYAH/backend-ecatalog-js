@@ -8,6 +8,7 @@
     "test": "npx jest",
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "docker": "docker compose up -d",
     "seed": "node prisma/seed.js"
   },
   "repository": {

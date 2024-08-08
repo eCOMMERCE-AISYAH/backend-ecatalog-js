@@ -170,11 +170,10 @@ async function update(id, req) {
     if (!result) throw new ApiErrorHandling(500, 'internal server error');
 
     const reduceProduct = await orderHistoryUtil.reduceStockByOrderHistory(id);
-    console.log(reduceProduct);
+
     if (!reduceProduct) {
       throw new ApiErrorHandling(500, 'internal server error');
     }
-    console.log('success order update status');
   } else {
     throw new ApiErrorHandling(400, 'invalid status');
   }
