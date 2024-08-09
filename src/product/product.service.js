@@ -170,7 +170,6 @@ async function update(req) {
   const result = await prisma.product.update({
     data: {
       name,
-      salePrice: Number(salePrice),
       purchasePrice: Number(purchasePrice),
       slug,
       description,
