@@ -116,7 +116,11 @@ async function getAllByQuery(req) {
       },
     },
     include: {
-      subCategory: true,
+      subCategory: {
+        include: {
+          Category: true,
+        },
+      },
       images: true,
       Category: true,
     },
