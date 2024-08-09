@@ -7,7 +7,10 @@ import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 async function create(req, productId) {
   try {
     const { files } = req; // Menggunakan "files" karena menerima lebih dari satu file
-    if (files.length === 0) throw new ApiErrorHandling(400, 'gambar wajib diisi');
+    if (files.length === 0) {
+      await prisma.product.delete({ where: { id: productId } });
+      throw new ApiErrorHandling(400, 'gambar wajib diisi');
+    }
     const promises = files.map(async (file) => {
       const { path, filename } = file;
 
