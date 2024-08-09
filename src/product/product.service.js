@@ -36,7 +36,9 @@ async function getProductBySold() {
   }
   return result;
 }
+
 // =====================
+
 async function create(req) {
   const {
     name,
@@ -114,12 +116,9 @@ async function getAllByQuery(req) {
       },
     },
     include: {
-      subCategory: {
-        include: {
-          category: true,
-        },
-      },
+      subCategory: true,
       images: true,
+      Category: true,
     },
   });
 
