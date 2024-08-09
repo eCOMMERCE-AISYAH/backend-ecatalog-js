@@ -26,6 +26,8 @@ async function getProductBySold() {
           category: true,
         },
       },
+      images: true,
+
     },
     take: 3,
   });
@@ -43,6 +45,7 @@ async function create(req) {
     subCategoryId,
     price,
     purchasePrice,
+    categoryId,
   } = req.body;
   const slug = slugify(name, { lower: true });
   const isExist = await prisma.product.count({
@@ -63,6 +66,7 @@ async function create(req) {
       purchasePrice: Number(purchasePrice),
       stock: Number(stock),
       subCategoryId,
+      categoryId,
       price: Number(price),
     },
     include: {
