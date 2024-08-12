@@ -118,11 +118,10 @@ async function getAllByQuery(req) {
     include: {
       subCategory: {
         include: {
-          Category: true,
+          category: true,
         },
       },
       images: true,
-      Category: true,
     },
   });
 
