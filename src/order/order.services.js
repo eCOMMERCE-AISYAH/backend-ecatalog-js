@@ -1,8 +1,6 @@
 import cryptoRandomString from 'crypto-random-string';
 import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
-import orderHistoryService from '../orderHistory/orderHistory.service.js';
-import productUtil from '../product/product.util.js';
 import orderHistoryUtil from '../orderHistory/orderHistory.util.js';
 
 // DASHBOARD
@@ -18,6 +16,15 @@ async function count() {
 }
 
 async function omzetByOrderStatus() {
+  const checkOrder = await prisma.order.findMany({
+    where: {
+      status: 'SUKSES',
+    },
+  });
+  if (checkOrder.length === 0 || !checkOrder) {
+    return 0;
+  }
+
   const result = await prisma.order.aggregate({
     _sum: {
       totalPrice: true,
