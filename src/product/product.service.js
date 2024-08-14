@@ -60,11 +60,11 @@ async function create(req) {
     throw new ApiErrorHandling(400, 'product is exist');
   }
 
-  if (subCategoryId === '') {
+  if (subCategoryId === 0) {
     subCategoryId = undefined;
   }
 
-  if (categoryId === '') {
+  if (categoryId === 0) {
     categoryId = undefined;
   }
 
