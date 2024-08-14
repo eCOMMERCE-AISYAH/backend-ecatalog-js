@@ -11,60 +11,135 @@ async function main() {
   await prisma.subCategory.deleteMany();
   await prisma.category.deleteMany();
   await prisma.user.deleteMany();
-  // Create Categories
-  const electronicsCategory = await prisma.category.create({
-    data: {
-      name: 'Electronics',
-      slug: 'electronics',
-    },
-  });
+  // Seed Users
+  // const users = await prisma.user.createMany({
+  //   data: [
+  //     {
+  //       id: 'user-uuid-1',
+  //       name: 'John Doe',
+  //       username: 'johndoe',
+  //       password: 'hashedpassword1',
+  //       address: '123 Main St',
+  //       phoneNumber: '123-456-7890',
+  //       role: 'USER',
+  //       token: 'randomtoken1',
+  //     },
+  //     {
+  //       id: 'user-uuid-2',
+  //       name: 'Jane Smith',
+  //       username: 'janesmith',
+  //       password: 'hashedpassword2',
+  //       address: '456 Oak Ave',
+  //       phoneNumber: '987-654-3210',
+  //       role: 'ADMIN',
+  //       token: 'randomtoken2',
+  //     },
+  //   ],
+  // });
 
-  const clothingCategory = await prisma.category.create({
-    data: {
-      name: 'Clothing',
-      slug: 'clothing',
-    },
-  });
-
-  // Create SubCategories
-  const mobileSubCategory = await prisma.subCategory.create({
-    data: {
-      name: 'Mobile Phones',
-      slug: 'mobile-phones',
-      category: {
-        connect: { id: electronicsCategory.id },
+  // Seed Categories
+  const categories = await prisma.category.createMany({
+    data: [
+      {
+        id: 'category-uuid-1',
+        name: 'Electronics',
+        slug: 'electronics',
       },
-    },
-  });
-
-  const laptopSubCategory = await prisma.subCategory.create({
-    data: {
-      name: 'Laptops',
-      slug: 'laptops',
-      category: {
-        connect: { id: electronicsCategory.id },
+      {
+        id: 'category-uuid-2',
+        name: 'Fashion',
+        slug: 'fashion',
       },
-    },
+    ],
   });
 
-  // Create Users
-  const adminUser = await prisma.user.create({
-    data: {
-      name: 'Admin User',
-      username: 'admin',
-      password: 'adminpassword',
-      role: 'ADMIN',
-    },
+  // Seed SubCategories
+  const subCategories = await prisma.subCategory.createMany({
+    data: [
+      {
+        id: 'subcategory-uuid-1',
+        name: 'Smartphones',
+        slug: 'smartphones',
+        categoryId: 'category-uuid-1',
+      },
+      {
+        id: 'subcategory-uuid-2',
+        name: 'Clothing',
+        slug: 'clothing',
+        categoryId: 'category-uuid-2',
+      },
+    ],
   });
 
-  const guestUser = await prisma.user.create({
-    data: {
-      name: 'Guest User',
-      username: 'guest',
-      password: 'guestpassword',
-      role: 'GUEST',
-    },
+  // Seed Products
+  const products = await prisma.product.createMany({
+    data: [
+      {
+        id: 'product-uuid-1',
+        name: 'iPhone 14',
+        slug: 'iphone-14',
+        description: 'Latest iPhone with A15 chip.',
+        stock: 50,
+        price: 999,
+        subCategoryId: 'subcategory-uuid-1',
+        categoryId: 'category-uuid-1',
+      },
+      {
+        id: 'product-uuid-2',
+        name: 'T-shirt',
+        slug: 't-shirt',
+        description: 'Comfortable cotton t-shirt.',
+        stock: 200,
+        price: 19,
+        subCategoryId: 'subcategory-uuid-2',
+        categoryId: 'category-uuid-2',
+      },
+    ],
   });
+
+  // Seed Product Images
+  const productImages = await prisma.productImage.createMany({
+    data: [
+      {
+        id: 'public/images/seedImage.webp',
+        image: 'iphone-14.jpg',
+        productId: 'product-uuid-1',
+      },
+      {
+        id: 'image-uuid-2',
+        image: 't-shirt.jpg',
+        productId: 'product-uuid-2',
+      },
+    ],
+  });
+
+  // Seed Orders
+  // const orders = await prisma.order.createMany({
+  //   data: [
+  //     {
+  //       id: 'order-uuid-1',
+  //       invoice: 'INV-001',
+  //       name: 'John Doe',
+  //       phoneNumber: '123-456-7890',
+  //       address: '123 Main St',
+  //       totalPrice: 999,
+  //       userId: 'user-uuid-1',
+  //       status: 'PROSES',
+  //     },
+  //     {
+  //       id: 'order-uuid-2',
+  //       invoice: 'INV-002',
+  //       name: 'Jane Smith',
+  //       phoneNumber: '987-654-3210',
+  //       address: '456 Oak Ave',
+  //       totalPrice: 19,
+  //       userId: 'user-uuid-2',
+  //       status: 'SUKSES',
+  //     },
+  //   ],
+  // });
+
+  console.log('Seeding completed.');
 }
 
 main()
