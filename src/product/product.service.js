@@ -60,6 +60,16 @@ async function create(req) {
     throw new ApiErrorHandling(400, 'product is exist');
   }
 
+  if (subCategoryId === '') {
+    subCategoryId = undefined;
+  }
+
+  if (categoryId === '') {
+    categoryId = undefined;
+  }
+
+  console.log(categoryId, 'asu', subCategoryId);
+
   const result = await prisma.product.create({
     data: {
       name,
