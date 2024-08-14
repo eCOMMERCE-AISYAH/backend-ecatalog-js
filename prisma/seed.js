@@ -101,14 +101,9 @@ async function main() {
   const productImages = await prisma.productImage.createMany({
     data: [
       {
-        id: 'public/images/seedImage.webp',
-        image: 'iphone-14.jpg',
+        id: 'image-uuid-1',
+        image: 'public/images/seedImage.webp',
         productId: 'product-uuid-1',
-      },
-      {
-        id: 'image-uuid-2',
-        image: 't-shirt.jpg',
-        productId: 'product-uuid-2',
       },
     ],
   });
