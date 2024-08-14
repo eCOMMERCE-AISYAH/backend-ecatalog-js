@@ -60,12 +60,15 @@ async function create(req) {
     throw new ApiErrorHandling(400, 'product is exist');
   }
 
-  if (subCategoryId === 0) {
-    subCategoryId = undefined;
+  let dataSubCategoryId = subCategoryId;
+  let dataCategoryId = categoryId;
+
+  if (subCategoryId === '0') {
+    dataSubCategoryId = undefined;
   }
 
-  if (categoryId === 0) {
-    categoryId = undefined;
+  if (categoryId === '0') {
+    dataCategoryId = undefined;
   }
 
   console.log(categoryId, 'asu', subCategoryId);
@@ -77,8 +80,8 @@ async function create(req) {
       description,
       purchasePrice: Number(purchasePrice),
       stock: Number(stock),
-      subCategoryId,
-      categoryId,
+      subCategoryId: dataSubCategoryId,
+      categoryId: dataCategoryId,
       price: Number(price),
     },
     include: {
