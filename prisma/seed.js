@@ -3,6 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
+  // Menghapus data yang ada
   await prisma.orderHistory.deleteMany();
   await prisma.cartProduct.deleteMany();
   await prisma.productImage.deleteMany();
@@ -11,31 +12,6 @@ async function main() {
   await prisma.subCategory.deleteMany();
   await prisma.category.deleteMany();
   await prisma.user.deleteMany();
-  // Seed Users
-  // const users = await prisma.user.createMany({
-  //   data: [
-  //     {
-  //       id: 'user-uuid-1',
-  //       name: 'John Doe',
-  //       username: 'johndoe',
-  //       password: 'hashedpassword1',
-  //       address: '123 Main St',
-  //       phoneNumber: '123-456-7890',
-  //       role: 'USER',
-  //       token: 'randomtoken1',
-  //     },
-  //     {
-  //       id: 'user-uuid-2',
-  //       name: 'Jane Smith',
-  //       username: 'janesmith',
-  //       password: 'hashedpassword2',
-  //       address: '456 Oak Ave',
-  //       phoneNumber: '987-654-3210',
-  //       role: 'ADMIN',
-  //       token: 'randomtoken2',
-  //     },
-  //   ],
-  // });
 
   // Seed Categories
   const categories = await prisma.category.createMany({
@@ -74,65 +50,48 @@ async function main() {
   // Seed Products
   const products = await prisma.product.createMany({
     data: [
-      {
-        id: 'product-uuid-1',
-        name: 'iPhone 14',
-        slug: 'iphone-14',
-        description: 'Latest iPhone with A15 chip.',
-        stock: 50,
-        price: 999,
+      // 10 Produk untuk kategori Electronics > Smartphones
+      ...Array.from({ length: 10 }).map((_, i) => ({
+        id: `product-electronics-uuid-${i + 1}`,
+        name: `Product ${i + 1} Electronics`,
+        slug: `product-${i + 1}-electronics`,
+        description: `Description for Product ${i + 1} in Electronics.`,
+        stock: Math.floor(Math.random() * 100),
+        price: Math.floor(Math.random() * 1000),
         subCategoryId: 'subcategory-uuid-1',
         categoryId: 'category-uuid-1',
-      },
-      {
-        id: 'product-uuid-2',
-        name: 'T-shirt',
-        slug: 't-shirt',
-        description: 'Comfortable cotton t-shirt.',
-        stock: 200,
-        price: 19,
+      })),
+      // 10 Produk untuk kategori Fashion > Clothing
+      ...Array.from({ length: 10 }).map((_, i) => ({
+        id: `product-fashion-uuid-${i + 1}`,
+        name: `Product ${i + 1} Fashion`,
+        slug: `product-${i + 1}-fashion`,
+        description: `Description for Product ${i + 1} in Fashion.`,
+        stock: Math.floor(Math.random() * 100),
+        price: Math.floor(Math.random() * 100),
         subCategoryId: 'subcategory-uuid-2',
         categoryId: 'category-uuid-2',
-      },
+      })),
     ],
   });
 
   // Seed Product Images
   const productImages = await prisma.productImage.createMany({
     data: [
-      {
-        id: 'image-uuid-1',
+      // 10 Gambar untuk kategori Electronics
+      ...Array.from({ length: 10 }).map((_, i) => ({
+        id: `image-electronics-uuid-${i + 1}`,
         image: 'public/images/seedImage.webp',
-        productId: 'product-uuid-1',
-      },
+        productId: `product-electronics-uuid-${i + 1}`,
+      })),
+      // 10 Gambar untuk kategori Fashion
+      ...Array.from({ length: 10 }).map((_, i) => ({
+        id: `image-fashion-uuid-${i + 1}`,
+        image: 'public/images/seedImage.webp',
+        productId: `product-fashion-uuid-${i + 1}`,
+      })),
     ],
   });
-
-  // Seed Orders
-  // const orders = await prisma.order.createMany({
-  //   data: [
-  //     {
-  //       id: 'order-uuid-1',
-  //       invoice: 'INV-001',
-  //       name: 'John Doe',
-  //       phoneNumber: '123-456-7890',
-  //       address: '123 Main St',
-  //       totalPrice: 999,
-  //       userId: 'user-uuid-1',
-  //       status: 'PROSES',
-  //     },
-  //     {
-  //       id: 'order-uuid-2',
-  //       invoice: 'INV-002',
-  //       name: 'Jane Smith',
-  //       phoneNumber: '987-654-3210',
-  //       address: '456 Oak Ave',
-  //       totalPrice: 19,
-  //       userId: 'user-uuid-2',
-  //       status: 'SUKSES',
-  //     },
-  //   ],
-  // });
 
   console.log('Seeding completed.');
 }
