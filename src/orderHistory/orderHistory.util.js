@@ -3,10 +3,11 @@ import prisma from '../../prisma/prismaClient.js';
 import ApiErrorHandling from '../../helper/apiErrorHandling.js';
 import productUtil from '../product/product.util.js';
 
-async function create(req) {
+async function create(req, tx) {
   const { orderId, userId } = req;
 
-  const getCartProduct = await prisma.cartProduct.findMany({
+  console.log(orderId, '   asssuuu', userId);
+  const getCartProduct = await tx.cartProduct.findMany({
     where: {
       userId,
     },
@@ -19,18 +20,18 @@ async function create(req) {
       },
     },
   });
-
+  console.log(getCartProduct);
   if (!getCartProduct || getCartProduct.length < 1) throw new ApiErrorHandling(500, 'cart tidak boleh kosong');
 
   const createPromises = getCartProduct.map(async (item) => {
     const {
       name, subCategory, images, price, id,
     } = item.product;
-    console.log(id);
+
     const data = {
       productId: id,
       productName: name,
-      subCategory: subCategory.name,
+      subCategory: 'null',
       productImage: images[0].image,
       quantity: item.quantity,
       orderId,
@@ -42,7 +43,7 @@ async function create(req) {
   });
   const data = await Promise.all(createPromises);
 
-  const createOrderHistory = await prisma.orderHistory.createMany({
+  const createOrderHistory = await tx.orderHistory.createMany({
     data,
   });
 

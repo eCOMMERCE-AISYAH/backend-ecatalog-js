@@ -105,6 +105,7 @@ async function createOrder(req, res) {
       order,
     );
   } catch (e) {
+    console.log(e);
     return responseJson.responseError(
       res,
       e.statusCode || 404,

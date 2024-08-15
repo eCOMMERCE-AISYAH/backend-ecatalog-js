@@ -120,27 +120,33 @@ async function create(req) {
     },
   };
 
-  const result = await prisma.order.create({
-    data: {
-      ...data,
-    },
-    include: {
-      user: true,
-    },
+  try {
+    const result = await prisma.$transaction(async (tx) => {
+      const order = await tx.order.create({
+        data: {
+          ...data,
+        },
+        include: {
+          user: true,
+        },
+      });
 
-  });
+      await orderHistoryUtil.create({
+        orderId: order.id,
+        userId: order.user.id,
+      }, tx);
 
-  if (!result) {
-    throw new ApiErrorHandling(500, 'internal server error');
+      return order;
+    });
+
+    return result;
+  } catch (error) {
+    // Tangkap error dan log untuk debug
+    console.error('Transaction failed:', error);
+
+    // Lempar error untuk ditangani oleh middleware atau handler lainnya
+    throw new ApiErrorHandling(500, 'Transaction failed, rolling back changes');
   }
-
-  // CREATE ORDER HISTORY
-  await orderHistoryUtil.create({
-    orderId: result.id,
-    userId: result.user.id,
-  });
-
-  return result;
 }
 
 async function update(id, req) {
