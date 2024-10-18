@@ -117,28 +117,25 @@ async function login(req) {
     throw new ApiErrorHandling(401, 'Username or password is invalid');
   }
 
-  // Buat token baru
-  const newToken = tokenUtil.generateAccessToken(user);
-  const refreshToken = tokenUtil.generateRefreshToken(user);
+  // // Buat token baru
+  // const newToken = tokenUtil.generateAccessToken(user);
+  // const refreshToken = tokenUtil.generateRefreshToken(user);
 
   // Simpan refresh token ke database
-  await prisma.refreshToken.create({
-    data: {
-      token: refreshToken,
-      user: {
-        connect: {
-          id: user.id,
-        },
-      },
-      expiredAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiredAt ke 7 hari ke depan
-    },
-  });
+  // await prisma.refreshToken.create({
+  //   data: {
+  //     token: refreshToken,
+  //     user: {
+  //       connect: {
+  //         id: user.id,
+  //       },
+  //     },
+  //     expiredAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // Set expiredAt ke 7 hari ke depan
+  //   },
+  // });
 
   // Kembalikan token baru dan refresh token
-  return {
-    token: newToken,
-    refreshToken,
-  };
+  return user;
 }
 
 async function getAll(req) {
