@@ -7,7 +7,7 @@ import productRoute from '../product/product.route.js';
 import userRoute from '../user/user.route.js';
 // import productImageRoute from '../productImage/productImage.route.js';
 import orderHistoryRoute from '../orderHistory/orderHistory.route.js';
-import authentication from '../middleware/auth.js';
+// import authentication from '../middleware/auth.js';
 
 const router = express.Router();
 
